@@ -55,6 +55,10 @@ Models are simply clases that define how Danjgo should interact with the app's d
 
 Add the `Topic` class to `models.py`
 ~~~ python
+from django.db import models
+
+# Create your models here.
+
 class Topic(models.Model):
     """ Topic that the use in learning about """
     text = models.CharField(max_length=200) # allocates 200 chars in database
@@ -110,4 +114,32 @@ This will modify database with the latest migrations file.
     `python manage.py migrate`
 
 ## Setting up `Admin Site`
-###     
+### Create `superuser`
+Adminstrators of site are `superusers` and have access rights to all priviledges (actions) and also maintain the priviledges of users of the site. A user has restrictive acces, typically read/write of their data. 
+1) Create a superuser
+
+    `python manage.py createsuperuser`
+2) A prompt guides setting up `superuser` credentials:
+- Username    <i>you can leave this blank to user current user logged into computer</i>
+- email <i>this can be left blank</i>
+- password <i>you will need to enter this twice</i>
+
+### Register Model
+Any models added to `models.py` must be registered manually in `admin.py`
+
+~~~ py
+from django.contrib import admin
+
+# Register your models here.
+from learning_logs.models import Topic  # import Topic model to be registered
+admin.site.register(Topic)  # regsters Topic to be managed via admin site
+~~~
+- The admin can now be seen on a browser directed to `http://127.0.0.1:8000/admin`
+        <div>  <img  src = './admin_login.png' width = 40%/> </div>
+1) Login using the `superuser` credentials    
+2) The Site Adminstration interface should now display
+   <div>  <img  src = './admin_logged_in.png' width = 40%/> </div>
+### Adding data to the database  
+Topics can be added to the database by clicking `Add`
+
+### 
