@@ -25,5 +25,21 @@ A virtual environment ties the application with all its required packages into a
             - urls.py >> manages pages Django creates
             - wsgi.py >> manages a `web server gateway interface`
 #### Database Installation
+1) Create the database (SQLite by default):
+    - `python manage.py migrate`
+    - this will create a `db.sqlite3` file 
+#### Run Server
+1) Run the server to verify the project setup
+    - `python manage.py runserver`
+    - The following default page can be seen on a browser directed to `http://127.0.0.1:8000/`
+        <div>  <img  src = './django_setup_good.png' width = 40%/> </div>
 
-
+    - if you accidentally close the terminal in VSCODE and need to quit the server, enter the following in a new terminal `sudo kill $(lsof -t -i:8000)`
+#### Setup App
+1) In a new terminal window, activate the virutal environment `source ll_env/bin/activate` and run startapp:
+    - `python manage.py startapp learning_logs`
+    - this will create a new directory with the following files:
+        <div><img src  = './learning_logs.png' /></div>
+        -  `models.py` >> manages app data
+        - `admin.py` >> 
+        - `views.py`   
