@@ -107,7 +107,7 @@ This will modify database with the latest migrations file.
     ~~~
 
 ### The typical flow to update the database is:
-1) Add specific `model class` to `models.py`
+1) Add specific `class` model to `models.py`
 2) Run `makemigrations` to build a `migrations` file 
     `python manage.py makemigrations` <i>appname</i>
 3) Run `migrations`
@@ -142,4 +142,16 @@ admin.site.register(Topic)  # regsters Topic to be managed via admin site
 ### Adding data to the database  
 Topics can be added to the database by clicking `Add`
 
-### 
+## Create `Entry` model
+A `many-to-one` relationship allows `many entries` to be associated with a single `topic`. This relationship may also be defined as a `one-to-many` where a single `topic` can have many `entries`.
+
+In the `Entry class` model, a `foreign key` will relate an `entry`  with a specific `topic` value. 
+
+1) Add the `Entry` class to `models.py`
+~~~
+
+
+~~~
+
+
+A `many-to-many` relationship allows `many entries` to be associated with a `topic` as well as `many topics` to be associated with an `entry`. Creating a `many-to-many` relationship often involves connecting two `many-to-one` relationships using a `join table`.
