@@ -13,7 +13,9 @@ class Topic(models.Model): # inherit from Django's base Model class
 
 class Entry(models.Model): # inherit from Django's base Model class
     """ Something specifis learned about a topic """  
-     # Each topic is assigned a specific key ID when created      
+     # Each topic is assigned a specific key ID when created  
+     # ForeignKey connects entry to a topic & CASCADE tells Django to delete every entry under a topic
+     #  when a topic is deleted    
     topic = models.ForeignKey(Topic,  on_delete=models.CASCADE)  # connects entry to a topic
     text = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True)
