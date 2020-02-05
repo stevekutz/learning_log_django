@@ -147,7 +147,7 @@ A `many-to-one` relationship allows `many entries` to be associated with a singl
 
 In the `Entry class` model, a `foreign key` will relate an `entry`  with a specific `topic` value. 
 
-1) Add the `Entry` class to `models.py`
+1) `Add` the `Entry` class to `models.py`
 ~~~ py
 class Entry(models.Model): # inherit from Django's base Model class
     """ Something specifis learned about a topic """     
@@ -170,22 +170,24 @@ class Entry(models.Model): # inherit from Django's base Model class
 A `many-to-many` relationship allows `many entries` to be associated with a `topic` as well as `many topics` to be associated with an `entry`. Creating a `many-to-many` relationship often involves connecting two `many-to-one` relationships using a `join table`.
 
 
+2) `Build` this migrations file with `makemigrations` 
+    `python manage.py makemigrations learning_logs`
 
-python manage.py makemigrations learning_logs
-`
-Migrations for 'learning_logs':
-  learning_logs/migrations/0002_entry.py
+    ~~~ bash
+    Migrations for 'learning_logs':
+    learning_logs/migrations/0002_entry.py
     - Create model Entry
-`
+    ~~~
+3) `Run` the migration
+    `python manage.py migrate`
 
-python manage.py makemigrations learning_logs
-`
-Migrations for 'learning_logs':
-  learning_logs/migrations/0002_entry.py
-    - Create model Entry
-(ll_env) 🤓[skutz@ ~/Documents/GitHub/learning_log_django $ python manage.py migrate
-Operations to perform:
-  Apply all migrations: admin, auth, contenttypes, learning_logs, sessions
-Running migrations:
-  Applying learning_logs.0002_entry... OK
-`
+    ~~~
+    Migrations for 'learning_logs':
+    learning_logs/migrations/0002_entry.py
+        - Create model Entry
+    (ll_env) 🤓[skutz@ ~/Documents/GitHub/learning_log_django $ python manage.py migrate
+    Operations to perform:
+    Apply all migrations: admin, auth, contenttypes, learning_logs, sessions
+    Running migrations:
+    Applying learning_logs.0002_entry... OK
+    ~~~
