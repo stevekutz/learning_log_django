@@ -191,3 +191,11 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
     Running migrations:
     Applying learning_logs.0002_entry... OK
     ~~~
+
+### The typical flow to update the database is:
+1) Add specific `class` model to `models.py`
+2) Run `makemigrations` to build a `migrations` file 
+    `python manage.py makemigrations` <i>appname</i>
+3) Run `migrations`
+    `python manage.py migrate`
+
