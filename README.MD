@@ -199,3 +199,12 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 3) Run `migrations`
     `python manage.py migrate`
 
+## Register `Entry` model
+1) Import the `Entry` model
+~~~ py
+from .models import Topic, Entry    # Entry added
+~~
+2) Register the `Entry` model
+~~~ py
+admin.site.register(Entry)
+~~~
