@@ -212,7 +212,7 @@ admin.site.register(Entry)
     - `python manage.py runserver`
 4) Verify that the admin panel shows entries     
     <div> <img src = "learning_logs/admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
-5) Add simple entiry info to verify that info is saved to database
+5) Add simple entry info to verify that info is saved to database
 ~~~
 
 ~~~
