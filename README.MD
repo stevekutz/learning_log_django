@@ -40,6 +40,7 @@ A virtual environment ties the application with all its required packages into a
 
 2) If you accidentally close the terminal in VSCODE and need to quit the server, enter the following in a new terminal
     - `sudo kill $(lsof -t -i:8000)`
+3) Quit the server using `CONTROL-C`    
 ### Create Django setup files for new app called `learning_logs`
 1) In a new terminal window, activate the virtual environment 
     -`source ll_env/bin/activate` 
@@ -213,6 +214,34 @@ admin.site.register(Entry)
 4) Verify that the admin panel shows entries     
     <div> <img src = "learning_logs/admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
 5) Add simple entry info to verify that info is saved to database
-~~~
+## Mapping a URL      
+1) Inside the `learning_log` folder, add the module `learning_logs.urls` to `urls.py`
+~~~ py
+from django.contrib import admin
+from django.urls import path, include # added include
 
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('learning_logs.urls')),     # added
+]
 ~~~
+2) Inside the `learning_logs` folder(note difference) from above, create another `urls.py` and add the following:
+~~~ py
+from django.urls import path
+
+from . import views
+
+app_name = 'learning_logs'
+urlpatterns = [
+    # Home page
+    path('', views.index, name = 'index'),
+]
+~~~
+- the imported `path` function maps URLs to views
+- the `. import views` imports `views.py` view from within same folder
+- the `app_name` variable defines the `urls.py` file from others with the same name
+- the `urlpaterns` variable defines the pages available within the app
+- the `path` function receives:
+    - the `route` of the base URL
+    - a call to the `index` function within `views.py`
+    - defines a the name of the link to the index page
