@@ -245,3 +245,15 @@ urlpatterns = [
     - the `route` of the base URL
     - a call to the `index` function within `views.py`
     - defines a the name of the link to the index page
+
+# Creating Home page `view`
+1) Inside the `learning_logs` folder, add the following to `views.py`
+~~~ py
+# Create your views here.
+def index(request):
+    """ The home page for Learning Log """
+    return render(request, 'learning_logs/index.html')
+~~~
+The render function recieves:
+- the `request object`
+- a `template` used to build define how Django renders a page
