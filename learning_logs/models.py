@@ -27,6 +27,6 @@ class Entry(models.Model): # inherit from Django's base Model class
 
     # show only first 5 chars of text
     def __str__(self):
-        """ Return a string represenation of the model """
+        """ Return a string representation of the model """
         # return self.text[:50] + "..."
         return f"{self.text[:50]}..."

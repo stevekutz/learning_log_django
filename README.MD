@@ -254,6 +254,19 @@ def index(request):
     """ The home page for Learning Log """
     return render(request, 'learning_logs/index.html')
 ~~~
-The render function recieves:
+The render function receives:
 - the `request object`
 - a `template` used to build define how Django renders a page
+
+
+# Creating a base template
+1) Inside the `template/learning_logs` folder, create a new file `base.html`. This will have a core set of elements that other pages will inherit.
+
+2) Using a `template tag`, create a `namespace` and `index`. We can pass in various `namespace` as a `URL pattern` in `url.py`
+
+~~~ html
+<p>
+    <a href = "{% url 'learning logs:index' %}"> Learning Log </a>
+</p>
+{% block content %}{% endblock content %}
+~~~
