@@ -270,3 +270,42 @@ The render function receives:
 </p>
 {% block content %}{% endblock content %}
 ~~~
+
+# Creating a child template
+1) The original `index.html` is modified to inherit content from the base template `base.html`
+~~~ html
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+
+<p> Learning Log helps you keep track of you learning, for any topic you are learning about </p>
+{% endblock content %}
+~~~
+
+# Creating Topics page
+1) Add to `urls.py` beneath `path('', views.index, name = 'index'),`
+~~~ py
+app_name = 'learning_logs'
+urlpatterns = [
+    # Home page
+    path('', views.index, name = 'index'),
+    # path that shows all topics
+    path('topics/', views.topics, name = 'topics'),
+
+]
+~~~
+
+2) Add to the top of `views.py`
+~~~ py
+path('', views.index, name = 'index'),
+~~~
+This is needed to import the data needed
+3) Add the `topics()` function to `views.py`
+~~~ py
+def topics(request):
+    """ Show all topics """
+    topics = Topic.objects.order_by('date_added')
+    context = {'topics': topics}
+    return render(request, 'learning_logs/topics.html', context)
+~~~
+The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
