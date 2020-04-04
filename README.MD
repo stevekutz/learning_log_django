@@ -309,3 +309,23 @@ def topics(request):
     return render(request, 'learning_logs/topics.html', context)
 ~~~
 The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
+
+# Creating Topics template
+1) The `{% extends %}` tag tells `Django` to inherit from the defined base.html file.
+~~~ py
+{% extends "learning_logs.base.html" %}
+~~~
+
+2) Within the `{% block content %}` tags, a special tag that emulates a `for loop` is implemented. This willrender topics if present. Otherwsie default content is provided
+~~~ py
+{% for topic in topics %}
+        <li> {{topic}} </li>
+    {% empty %}
+        <li> No topics have been added yet </li>    
+    {% endfor%}
+~~~
+
+3) Within `base.html`, add a link to Topics
+~~~ py
+    <a href = "{% url 'learning_logs:topics' %}"> Topics </a>
+~~~
