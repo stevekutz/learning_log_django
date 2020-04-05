@@ -246,7 +246,7 @@ urlpatterns = [
     - a call to the `index` function within `views.py`
     - defines a the name of the link to the index page
 
-# Creating Home page `view`
+### Creating Home page `view`
 1) Inside the `learning_logs` folder, add the following to `views.py`
 ~~~ py
 # Create your views here.
@@ -259,7 +259,7 @@ The render function receives:
 - a `template` used to build define how Django renders a page
 
 
-# Creating a base template
+### Creating a base template
 1) Inside the `template/learning_logs` folder, create a new file `base.html`. This will have a core set of elements that other pages will inherit.
 
 2) Using a `template tag`, create a `namespace` and `index`. We can pass in various `namespace` as a `URL pattern` in `url.py`
@@ -271,7 +271,7 @@ The render function receives:
 {% block content %}{% endblock content %}
 ~~~
 
-# Creating a child template
+### Creating a child template
 1) The original `index.html` is modified to inherit content from the base template `base.html`
 ~~~ html
 {% extends "learning_logs/base.html" %}
@@ -282,7 +282,7 @@ The render function receives:
 {% endblock content %}
 ~~~
 
-# Creating Topics page
+### Creating Topics page
 1) Add to `urls.py` beneath `path('', views.index, name = 'index'),`
 ~~~ py
 app_name = 'learning_logs'
@@ -302,30 +302,72 @@ path('', views.index, name = 'index'),
 This is needed to import the data needed
 3) Add the `topics()` function to `views.py`
 ~~~ py
-def topics(request):
-    """ Show all topics """
-    topics = Topic.objects.order_by('date_added')
-    context = {'topics': topics}
-    return render(request, 'learning_logs/topics.html', context)
+    def topics(request):
+        """ Show all topics """
+        topics = Topic.objects.order_by('data_added')
+        context = {'topics': topics}
+        return render(request, 'learning_logs/topics.html', context)
 ~~~
 The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
 
-# Creating Topics template
+### Creating Topics template
 1) The `{% extends %}` tag tells `Django` to inherit from the defined base.html file.
 ~~~ py
-{% extends "learning_logs.base.html" %}
+    {% extends "learning_logs.base.html" %}
 ~~~
 
 2) Within the `{% block content %}` tags, a special tag that emulates a `for loop` is implemented. This willrender topics if present. Otherwsie default content is provided
 ~~~ py
-{% for topic in topics %}
-        <li> {{topic}} </li>
-    {% empty %}
-        <li> No topics have been added yet </li>    
+    {% for topic in topics %}
+            <li> {{topic}} </li>
+        {% empty %}
+            <li> No topics have been added yet </li>    
     {% endfor%}
 ~~~
 
-3) Within `base.html`, add a link to Topics
+3) Within `base.html`, add a link to Topics. The dash after the first link is used to help separate the links for the user.
 ~~~ py
-    <a href = "{% url 'learning_logs:topics' %}"> Topics </a>
+    <p>
+        <a href = "{% url 'learning_logs:index' %}"> Learning Log </a> -
+        <a href = "{% url 'learning_logs:topics' %}"> Topics </a>
+    </p>
+~~~
+
+### Creating individual topics page
+1) Append the following into `urls.py`. The `topic_id` is used to call `topic()` with a unique database entry
+~~~ py
+    # detail page for a single topic based on id
+    path('topics/<int:topic_id>/', views.topics, name = 'topic')
+~~~
+2) Create a `view function` within `views.py` that acccepts a parameter for the topic_id in addition to the `request object`. Queries are created for `topic` and `entries`.
+~~~ py
+    def topic(request, topic_id):
+        """ Show a single topic and all of its entries""" 
+        topic = Topic.objects.get(id=topic_id)
+        entries = topic.entry_set.order_by('-date_added')
+        context = {'topic': topic, 'entries': entries}
+        return render(request, 'learning_logs/topic.html', context)
+~~~
+3) Add a `topic.html` page that inherits from  `base.html`.
+~~~ html
+    {% extends 'learning_logs/base.html' %}
+
+    {% block content %}
+
+    <p> Topic:: {{topic} </p>}
+
+    <p> Entries: </p>
+
+    <ul>
+    {% for entry in entries %}
+        <li>
+            <p> {{ entry.date_added|date: 'M d, Y H:i'}} </p>
+            <p> {{ entry.text|linebreaks}}</p>
+        </li>
+    {% empty %}    
+        <li> There are no entries for this topic yet </li>
+    {% endfor %}    
+    </ul>
+
+    {% endblock content %}
 ~~~
