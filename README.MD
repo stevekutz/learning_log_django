@@ -1,3 +1,13 @@
+# Learning Logs project
+1) Base project from `Python Crash course 2nd ed` by `Eric Matthes`
+2) Prior to deployment, the following steps are requried to launch project
+    - Launch virtual environment 
+        - `source ll_env/bin/activate`
+    - Run the Django server
+        - `python manage.py runserver`
+3) Each `Model` is essentially a special class Django uses to present data
+4) Each `View` is a special function that processes the data of user request and presents a UI to the browser. A base `template` is often used to prepare the UI for different views. 
+
 ## Initial Setup
 
 ### Virtual environment
@@ -271,6 +281,7 @@ The render function receives:
 {% block content %}{% endblock content %}
 ~~~
 
+3) See <a href = "https://docs.djangoproject.com/en/2.2/ref/templates/" > Django documentation on templates </a> for more info
 ### Creating a child template
 1) The original `index.html` is modified to inherit content from the base template `base.html`
 ~~~ html
@@ -337,7 +348,7 @@ The request object is returned from the server and a query is set up. A `context
 1) Append the following into `urls.py`. The `topic_id` is used to call `topic()` with a unique database entry
 ~~~ py
     # detail page for a single topic based on id
-    path('topics/<int:topic_id>/', views.topics, name = 'topic')
+    path('topics/<int:topic_id>/', views.topic, name = 'topic')
 ~~~
 2) Create a `view function` within `views.py` that acccepts a parameter for the topic_id in addition to the `request object`. Queries are created for `topic` and `entries`.
 ~~~ py
@@ -346,7 +357,7 @@ The request object is returned from the server and a query is set up. A `context
         topic = Topic.objects.get(id=topic_id)
         entries = topic.entry_set.order_by('-date_added')
         context = {'topic': topic, 'entries': entries}
-        return render(request, 'learning_logs/topic.html', context)
+        return render(request, 'learning_logs/topic.html', context)  
 ~~~
 3) Add a `topic.html` page that inherits from  `base.html`.
 ~~~ html
@@ -361,12 +372,12 @@ The request object is returned from the server and a query is set up. A `context
     <ul>
     {% for entry in entries %}
         <li>
-            <p> {{ entry.date_added|date: 'M d, Y H:i'}} </p>
-            <p> {{ entry.text|linebreaks}}</p>
+        <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+        <p>{{ entry.text|linebreaks }}</p>
         </li>
     {% empty %}    
         <li> There are no entries for this topic yet </li>
-    {% endfor %}    
+    {% endfor %}   
     </ul>
 
     {% endblock content %}
