@@ -14,7 +14,7 @@
 A virtual environment ties the application with all its required packages into a 
 1) Create virtual environment called `ll_env` by entering into terminal: 
     - `python3 -m  venv ll_env`
-    - There shoudl be a new folder called `ll_env` that contains a `pyenv.cfg` file.
+    - There should be a new folder called `ll_env` that contains a `pyenv.cfg` file.
 2) Activate the virtual environment (for Mac Os)
     - `source ll_env/bin/activate` 
      - the start of your path should now show `(ll_env)`
@@ -60,7 +60,7 @@ A virtual environment ties the application with all its required packages into a
         <div><img src  = './learning_logs.png' /></div>
     - `models.py` >> manages app data
     - `admin.py` >> displays models in the django admin panel
-    - `views.py` >> views are a Python function or class that takes a web request and return a web response. In Django, views have to be created in the app's views.py file  
+    - `views.py` >> views are a Python function or class that takes a web request and returns a web response. In Django, views have to be created in the app's views.py file  
 ### Define models
 Models are simply clases that define how Danjgo should interact with the app's data.  
 
