@@ -159,23 +159,24 @@ A `many-to-one` relationship allows `many entries` to be associated with a singl
 In the `Entry class` model, a `foreign key` will relate an `entry`  with a specific `topic` value. 
 
 1) `Add` the `Entry` class to `models.py`
-~~~ py
-class Entry(models.Model): # inherit from Django's base Model class
-    """ Something specifis learned about a topic """     
-    topic = models.ForeignKey(Topic,  on_delete=models.CASCADE)  # connects entry to a topic
-    text = models.TextField()
-    date_added = models.DateTimeField(auto_now_add=True)
-    # tells Django to use  'Entries' deal with mutliple entries
-    # otherwise Django creates 'Entrys'
-    class Meta:
-        verbose_name_plural = 'entries'
 
-    # show only first 5 chars of text
-    def __str__(self):
-        """ Return a string represenation of the model """
-        return self.text[:50] + "..."
+    ~~~ py
+    class Entry(models.Model): # inherit from Django's base Model class
+        """ Something specifis learned about a topic """     
+        topic = models.ForeignKey(Topic,  on_delete=models.CASCADE)  # connects entry to a topic
+        text = models.TextField()
+        date_added = models.DateTimeField(auto_now_add=True)
+        # tells Django to use  'Entries' deal with mutliple entries
+        # otherwise Django creates 'Entrys'
+        class Meta:
+            verbose_name_plural = 'entries'
 
-~~~
+        # show only first 5 chars of text
+        def __str__(self):
+            """ Return a string represenation of the model """
+            return self.text[:50] + "..."
+
+    ~~~
 
 
 A `many-to-many` relationship allows `many entries` to be associated with a `topic` as well as `many topics` to be associated with an `entry`. Creating a `many-to-many` relationship often involves connecting two `many-to-one` relationships using a `join table`.
@@ -212,13 +213,13 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 
 ## Register `Entry` model
 1) Import the `Entry` model
-~~~ py
-from .models import Topic, Entry    # Entry added
-~~
+    ~~~ py
+    from .models import Topic, Entry    # Entry added
+    ~~
 2) Register the `Entry` model
-~~~ py
-admin.site.register(Entry)
-~~~
+    ~~~ py
+    admin.site.register(Entry)
+    ~~~
 3) Run the server
     - `python manage.py runserver`
 4) Verify that the admin panel shows entries     
@@ -226,27 +227,27 @@ admin.site.register(Entry)
 5) Add simple entry info to verify that info is saved to database
 ## Mapping a URL      
 1) Inside the `learning_log` folder, add the module `learning_logs.urls` to `urls.py`
-~~~ py
-from django.contrib import admin
-from django.urls import path, include # added include
+    ~~~ py
+    from django.contrib import admin
+    from django.urls import path, include # added include
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('learning_logs.urls')),     # added
-]
-~~~
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('', include('learning_logs.urls')),     # added
+    ]
+    ~~~
 2) Inside the `learning_logs` folder(note difference) from above, create another `urls.py` and add the following:
-~~~ py
-from django.urls import path
+    ~~~ py
+    from django.urls import path
 
-from . import views
+    from . import views
 
-app_name = 'learning_logs'
-urlpatterns = [
-    # Home page
-    path('', views.index, name = 'index'),
-]
-~~~
+    app_name = 'learning_logs'
+    urlpatterns = [
+        # Home page
+        path('', views.index, name = 'index'),
+    ]
+    ~~~
 - the imported `path` function maps URLs to views
 - the `. import views` imports `views.py` view from within same folder
 - the `app_name` variable defines the `urls.py` file from others with the same name
@@ -258,12 +259,12 @@ urlpatterns = [
 
 ### Creating Home page `view`
 1) Inside the `learning_logs` folder, add the following to `views.py`
-~~~ py
-# Create your views here.
-def index(request):
-    """ The home page for Learning Log """
-    return render(request, 'learning_logs/index.html')
-~~~
+    ~~~ py
+    # Create your views here.
+    def index(request):
+        """ The home page for Learning Log """
+        return render(request, 'learning_logs/index.html')
+    ~~~
 The render function receives:
 - the `request object`
 - a `template` used to build define how Django renders a page
@@ -274,111 +275,145 @@ The render function receives:
 
 2) Using a `template tag`, create a `namespace` and `index`. We can pass in various `namespace` as a `URL pattern` in `url.py`
 
-~~~ html
-<p>
-    <a href = "{% url 'learning logs:index' %}"> Learning Log </a>
-</p>
-{% block content %}{% endblock content %}
-~~~
+    ~~~ html
+    <p>
+        <a href = "{% url 'learning logs:index' %}"> Learning Log </a>
+    </p>
+    {% block content %}{% endblock content %}
+    ~~~
 
 3) See <a href = "https://docs.djangoproject.com/en/2.2/ref/templates/" > Django documentation on templates </a> for more info
 ### Creating a child template
 1) The original `index.html` is modified to inherit content from the base template `base.html`
-~~~ html
-{% extends "learning_logs/base.html" %}
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
 
-{% block content %}
+    {% block content %}
 
-<p> Learning Log helps you keep track of you learning, for any topic you are learning about </p>
-{% endblock content %}
-~~~
+    <p> Learning Log helps you keep track of you learning, for any topic you are learning about </p>
+    {% endblock content %}
+    ~~~
 
 ### Creating Topics page
 1) Add to `urls.py` beneath `path('', views.index, name = 'index'),`
-~~~ py
-app_name = 'learning_logs'
-urlpatterns = [
-    # Home page
-    path('', views.index, name = 'index'),
-    # path that shows all topics
-    path('topics/', views.topics, name = 'topics'),
+    ~~~ py
+    app_name = 'learning_logs'
+    urlpatterns = [
+        # Home page
+        path('', views.index, name = 'index'),
+        # path that shows all topics
+        path('topics/', views.topics, name = 'topics'),
 
-]
-~~~
+    ]
+    ~~~
 
 2) Add to the top of `views.py`
-~~~ py
-path('', views.index, name = 'index'),
-~~~
+    ~~~ py
+    path('', views.index, name = 'index'),
+    ~~~
 This is needed to import the data needed
 3) Add the `topics()` function to `views.py`
-~~~ py
-    def topics(request):
-        """ Show all topics """
-        topics = Topic.objects.order_by('data_added')
-        context = {'topics': topics}
-        return render(request, 'learning_logs/topics.html', context)
-~~~
+    ~~~ py
+        def topics(request):
+            """ Show all topics """
+            topics = Topic.objects.order_by('data_added')
+            context = {'topics': topics}
+            return render(request, 'learning_logs/topics.html', context)
+    ~~~
 The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
 
 ### Creating Topics template
 1) The `{% extends %}` tag tells `Django` to inherit from the defined base.html file.
-~~~ py
-    {% extends "learning_logs.base.html" %}
-~~~
+    ~~~ py
+        {% extends "learning_logs.base.html" %}
+    ~~~
 
 2) Within the `{% block content %}` tags, a special tag that emulates a `for loop` is implemented. This willrender topics if present. Otherwsie default content is provided
-~~~ py
-    {% for topic in topics %}
-            <li> {{topic}} </li>
-        {% empty %}
-            <li> No topics have been added yet </li>    
-    {% endfor%}
-~~~
+    ~~~ py
+        {% for topic in topics %}
+                <li> {{topic}} </li>
+            {% empty %}
+                <li> No topics have been added yet </li>    
+        {% endfor%}
+    ~~~
 
 3) Within `base.html`, add a link to Topics. The dash after the first link is used to help separate the links for the user.
-~~~ py
-    <p>
-        <a href = "{% url 'learning_logs:index' %}"> Learning Log </a> -
-        <a href = "{% url 'learning_logs:topics' %}"> Topics </a>
-    </p>
-~~~
+    ~~~ py
+        <p>
+            <a href = "{% url 'learning_logs:index' %}"> Learning Log </a> -
+            <a href = "{% url 'learning_logs:topics' %}"> Topics </a>
+        </p>
+    ~~~
 
 ### Creating individual topics page
 1) Append the following into `urls.py`. The `topic_id` is used to call `topic()` with a unique database entry
-~~~ py
-    # detail page for a single topic based on id
-    path('topics/<int:topic_id>/', views.topic, name = 'topic')
-~~~
+    ~~~ py
+        # detail page for a single topic based on id
+        path('topics/<int:topic_id>/', views.topic, name = 'topic')
+    ~~~
 2) Create a `view function` within `views.py` that acccepts a parameter for the topic_id in addition to the `request object`. Queries are created for `topic` and `entries`.
-~~~ py
-    def topic(request, topic_id):
-        """ Show a single topic and all of its entries""" 
-        topic = Topic.objects.get(id=topic_id)
-        entries = topic.entry_set.order_by('-date_added')
-        context = {'topic': topic, 'entries': entries}
-        return render(request, 'learning_logs/topic.html', context)  
-~~~
+    ~~~ py
+        def topic(request, topic_id):
+            """ Show a single topic and all of its entries""" 
+            topic = Topic.objects.get(id=topic_id)
+            entries = topic.entry_set.order_by('-date_added')
+            context = {'topic': topic, 'entries': entries}
+            return render(request, 'learning_logs/topic.html', context)  
+    ~~~
 3) Add a `topic.html` page that inherits from  `base.html`.
-~~~ html
-    {% extends 'learning_logs/base.html' %}
+    ~~~ html
+        {% extends 'learning_logs/base.html' %}
 
-    {% block content %}
+        {% block content %}
 
-    <p> Topic:: {{topic} </p>}
+        <p> Topic:: {{topic} </p>}
 
-    <p> Entries: </p>
+        <p> Entries: </p>
 
-    <ul>
-    {% for entry in entries %}
-        <li>
-        <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
-        <p>{{ entry.text|linebreaks }}</p>
-        </li>
-    {% empty %}    
-        <li> There are no entries for this topic yet </li>
-    {% endfor %}   
-    </ul>
+        <ul>
+        {% for entry in entries %}
+            <li>
+            <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+            <p>{{ entry.text|linebreaks }}</p>
+            </li>
+        {% empty %}    
+            <li> There are no entries for this topic yet </li>
+        {% endfor %}   
+        </ul>
 
-    {% endblock content %}
-~~~
+        {% endblock content %}
+    ~~~
+
+### Creating a form for user input
+1) Using `Djangos` class `ModelForm`, create `forms.py` inside the application folder `learning_logs`
+    - `TopicForm` inherits from `forms.ModelForm`
+    - The `model` is based from the `Topic` model
+    - The form will have a `text field` without a `label`
+        ~~~ py
+            from django import forms
+
+            from .models import Topic
+
+            class TopicForm(forms.ModelForm):
+                class Meta:
+                    model = Topic
+                    fields = [ 'text' ]
+                    labels = { 'text': '' }
+        ~~~
+
+2) Add the `URL` for the form to `urls.py`
+    - The URL pattern will direct requests to the `new_topic()` view function
+        ~~~ py
+        urlpatterns = [
+            # Home page
+            path('', views.index, name = 'index'),
+            # path that shows all topics
+            path('topics/', views.topics, name = 'topics'),
+            # detail page for a single topic based on id
+            path('topics/<int:topic_id>/', views.topic, name = 'topic'),
+            # form page for adding new topic
+            path('new_topic/', views.new_topic, name = 'new_topic')
+        ]
+        ~~~    
+
+3) Create the `new_topic` view function
