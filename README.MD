@@ -431,9 +431,55 @@ The request object is returned from the server and a query is set up. A `context
         form = TopicForm(data = request.POST)
         if form.is_valid():
             form.save()
-            return redirect('learning_logs: topics')
+            return redirect('learning_logs:topics')
 
     # Display a blank or invalid form
     context = {'form': form}
     return render(request, 'learning_logs/new_topic.html', context)
+    ~~~
+
+    4) Create the form for creating a new topic
+        - The `new_topic` function receives the submitted form data as a `POST` request 
+        - `{% crsf token %}` prevents `cross-site request forgery` hacker attacks to the server
+        - The `{{ form.as_p }}` template variable uses the `as_p` modifier to render the form as `p elements`
+
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block content %}
+        <p> Add a new topic: </p>
+
+        <form action = "{% url 'learning_logs:new_topic' %}" method = 'post'>
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button name = "submit"> Add a new topic </button>
+        </form>
+
+    {% endblock content %} 
+    ~~~     
+
+    5) Link the `new_topic` page within `topics.html`
+    - Add the last line so that `topics.html` now looks like
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block content %}
+
+        <p> Topics </p>
+
+        <ul>
+            {% for topic in topics %}
+                <li> 
+                    <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>           
+                </li>
+            {% empty %}
+                <li> No topics have been added yet </li>    
+            {% endfor%}
+        </ul>
+
+        <a href = "{% url 'learning_logs:new_topic' %}"> Add a new topic </a>
+
+    {% endblock content %}  
+
     ~~~
