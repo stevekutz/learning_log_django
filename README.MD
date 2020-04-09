@@ -417,3 +417,23 @@ The request object is returned from the server and a query is set up. A `context
         ~~~    
 
 3) Create the `new_topic` view function
+    - In addition to render, the `redirect` function is imported in order to send the user(e.g. redirect) to the topics back after a new topic is written to the database via `form.save()`
+    - `form = TopicForm()` assigns an instance of TopicForm to the variable `form`
+    - the `context dictionary` contains the template for the form
+    ~~~ py
+    def new_topic(request):
+    """ Add new topic """       
+    if (request.method != 'POST' and request.method == 'GET'):
+        # There was no POST data sumitted, return blank form
+        form = TopicForm()
+    else:
+        # POST data exists, process data within request.POST
+        form = TopicForm(data = request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs: topics')
+
+    # Display a blank or invalid form
+    context = {'form': form}
+    return render(request, 'learning_logs/new_topic.html', context)
+    ~~~
