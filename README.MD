@@ -229,11 +229,11 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 1) Inside the `learning_log` folder, add the module `learning_logs.urls` to `urls.py`
     ~~~ py
     from django.contrib import admin
-    from django.urls import path, include # added include
+    from django.urls import path, include
 
     urlpatterns = [
         path('admin/', admin.site.urls),
-        path('', include('learning_logs.urls')),     # added
+        path('', include('learning_logs.urls')),
     ]
     ~~~
 2) Inside the `learning_logs` folder(note difference) from above, create another `urls.py` and add the following:
@@ -420,66 +420,66 @@ The request object is returned from the server and a query is set up. A `context
     - In addition to render, the `redirect` function is imported in order to send the user(e.g. redirect) to the topics back after a new topic is written to the database via `form.save()`
     - `form = TopicForm()` assigns an instance of TopicForm to the variable `form`
     - the `context dictionary` contains the template for the form
-    ~~~ py
-    def new_topic(request):
-    """ Add new topic """       
-    if (request.method != 'POST' and request.method == 'GET'):
-        # There was no POST data sumitted, return blank form
-        form = TopicForm()
-    else:
-        # POST data exists, process data within request.POST
-        form = TopicForm(data = request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('learning_logs:topics')
+        ~~~ py
+        def new_topic(request):
+        """ Add new topic """       
+        if (request.method != 'POST' and request.method == 'GET'):
+            # There was no POST data sumitted, return blank form
+            form = TopicForm()
+        else:
+            # POST data exists, process data within request.POST
+            form = TopicForm(data = request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('learning_logs:topics')
 
-    # Display a blank or invalid form
-    context = {'form': form}
-    return render(request, 'learning_logs/new_topic.html', context)
-    ~~~
+        # Display a blank or invalid form
+        context = {'form': form}
+        return render(request, 'learning_logs/new_topic.html', context)
+        ~~~
 
-    4) Create the form for creating a new topic
-        - The `new_topic` function receives the submitted form data as a `POST` request 
-        - `{% crsf token %}` prevents `cross-site request forgery` hacker attacks to the server
-        - The `{{ form.as_p }}` template variable uses the `as_p` modifier to render the form as `p elements`
+4) Create the form for creating a new topic
+    - The `new_topic` function receives the submitted form data as a `POST` request 
+    - `{% crsf token %}` prevents `cross-site request forgery` hacker attacks to the server
+    - The `{{ form.as_p }}` template variable uses the `as_p` modifier to render the form as `p elements`
 
-    ~~~ html
-    {% extends "learning_logs/base.html" %}
+        ~~~ html
+        {% extends "learning_logs/base.html" %}
 
-    {% block content %}
-        <p> Add a new topic: </p>
+        {% block content %}
+            <p> Add a new topic: </p>
 
-        <form action = "{% url 'learning_logs:new_topic' %}" method = 'post'>
-            {% csrf_token %}
-            {{ form.as_p }}
+            <form action = "{% url 'learning_logs:new_topic' %}" method = 'post'>
+                {% csrf_token %}
+                {{ form.as_p }}
 
-            <button name = "submit"> Add a new topic </button>
-        </form>
+                <button name = "submit"> Add a new topic </button>
+            </form>
 
-    {% endblock content %} 
-    ~~~     
+        {% endblock content %} 
+        ~~~     
 
-    5) Link the `new_topic` page within `topics.html`
+5) Link the `new_topic` page within `topics.html`
     - Add the last line so that `topics.html` now looks like
-    ~~~ html
-    {% extends "learning_logs/base.html" %}
+        ~~~ html
+        {% extends "learning_logs/base.html" %}
 
-    {% block content %}
+        {% block content %}
 
-        <p> Topics </p>
+            <p> Topics </p>
 
-        <ul>
-            {% for topic in topics %}
-                <li> 
-                    <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>           
-                </li>
-            {% empty %}
-                <li> No topics have been added yet </li>    
-            {% endfor%}
-        </ul>
+            <ul>
+                {% for topic in topics %}
+                    <li> 
+                        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>           
+                    </li>
+                {% empty %}
+                    <li> No topics have been added yet </li>    
+                {% endfor%}
+            </ul>
 
-        <a href = "{% url 'learning_logs:new_topic' %}"> Add a new topic </a>
+            <a href = "{% url 'learning_logs:new_topic' %}"> Add a new topic </a>
 
-    {% endblock content %}  
+        {% endblock content %}  
 
-    ~~~
+        ~~~
