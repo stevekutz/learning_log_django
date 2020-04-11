@@ -483,3 +483,18 @@ The request object is returned from the server and a query is set up. A `context
         {% endblock content %}  
 
         ~~~
+
+6) Append to the import in `forms.py` and add a class to manage user entries
+    - the default Django widget is overidden with the custom widget attribute tp make the test area 80 coluimns wide(default would be 40 columns)
+    ~~~ py
+    from .models import Topic, Entry
+    
+    ...
+
+    class EntryForm(forms.ModelForm):
+        class Meta:
+            model = Entry
+            fields = ['text']      
+            labels = {'text': 'Entry:'}
+            widget = {'text': forms.Textarea(attrs = {'cols': 80})}
+    ~~~
