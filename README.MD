@@ -485,7 +485,7 @@ The request object is returned from the server and a query is set up. A `context
         ~~~
 
 6) Append to the import in `forms.py` and add a class to manage user entries
-    - the default Django widget is overidden with the custom widget attribute tp make the test area 80 coluimns wide(default would be 40 columns)
+    - the default Django widget is overidden with the custom widget attribute to make the test area 80 coluimns wide(default would be 40 columns)
     ~~~ py
     from .models import Topic, Entry
     
@@ -498,3 +498,14 @@ The request object is returned from the server and a query is set up. A `context
             labels = {'text': 'Entry:'}
             widget = {'text': forms.Textarea(attrs = {'cols': 80})}
     ~~~
+7) Add URL for new_entry to `urls.py`
+    ~~~ py
+    # Page for new entries  
+    path('new_entry/<int:topic_id>/', views.new_entry, name = 'new_entry'),
+    ~~~
+8) Create `entryView()` function
+    - topic variable is assigned to specific id of topic
+    - if request method is `POST`, create an instance of `EntryForm` using the returned `POST` data
+    - the `commit=False` argument prevents the database from being updated. The `new_entry` object also requires the `topic` attribute to be set with the `topic_id` before writing to the database
+    - the `redirect` function requires 2 arguments this time since the `topic` function requires the specified `view` and the specific `topic_id`
+
