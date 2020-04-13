@@ -486,6 +486,7 @@ The request object is returned from the server and a query is set up. A `context
 
 6) Append to the import in `forms.py` and add a class to manage user entries
     - the default Django widget is overidden with the custom widget attribute to make the test area 80 coluimns wide(default would be 40 columns)
+    - The labels field is assigned a blank label
     ~~~ py
     from .models import Topic, Entry
     
@@ -495,7 +496,7 @@ The request object is returned from the server and a query is set up. A `context
         class Meta:
             model = Entry
             fields = ['text']      
-            labels = {'text': 'Entry:'}
+            labels = {'text': ''}
             widget = {'text': forms.Textarea(attrs = {'cols': 80})}
     ~~~
 7) Add URL for new_entry to `urls.py`
@@ -509,3 +510,29 @@ The request object is returned from the server and a query is set up. A `context
     - the `commit=False` argument prevents the database from being updated. The `new_entry` object also requires the `topic` attribute to be set with the `topic_id` before writing to the database
     - the `redirect` function requires 2 arguments this time since the `topic` function requires the specified `view` and the specific `topic_id`
 
+9) Create template for `new_entry`
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block content %}
+
+    <p><a href = "{% url 'learning_logs:topic' topic.id %}">{{ topic }} </a></p>
+
+    <p> Add a new entry </p>
+
+    <form action="{% url 'learning_logs:new_entry' topic.id %}" method = 'post'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button name = 'submit'>Add entry </button>
+    </form>
+
+    {% endblock content %}
+    ~~~
+
+10) Link `new_entry` page in `topic.html`
+    ~~~ html
+    <p>
+        <a href = "{% url 'learning_logs:new_entry' topic.id %}"> Add new entry </a>
+    </p>
+    ~~~
+    
