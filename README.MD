@@ -554,3 +554,40 @@ The request object is returned from the server and a query is set up. A `context
 - the `edit_entry` template is returned if either
     - the initial form for editiing is returned
     - the submitted form is invalid
+    ~~~ py
+    def edit_entry(request, entry_id):
+        """ Edit an exiting entry """
+        entry = Entry.objects.get(id = entry_id)
+        topic = entry.topic
+
+        if (request.method != 'POST' and request.method == 'GET'):
+            # GET request => this is an initial request, pre-fill form with current entry data
+            form = EntryForm(instance=entry)
+        else: 
+            # POST request => updated data submitted, fill form with updated data
+            form = EntryForm(instance = entry, data = request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('learning_logs:topic', topic_id = topic.id)
+
+        context = {'entry': entry, 'topic': topic, 'form': form}
+        return render(request, 'learning_logs/edit_entry.html', context)    
+    ~~~
+3) Link to edit_entry page to each topic in `topic.html`
+    ~~~ html
+    {% extends 'learning_logs/base.html' %}
+
+    ...
+
+    <ul>
+    {% for entry in entries %}
+        <li>
+            <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+            <p>{{ entry.text|linebreaks }}</p>
+            <p>
+                <a href = "{% url 'learning_logs:edit_entry' entry.id %}"> Edit entry </a>
+            </p>
+        </li>
+    ...
+    {% endblock content %}
+    ~~~
