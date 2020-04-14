@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Topic    # ADDED this  400
+from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
 # Create your views here.
@@ -56,4 +56,23 @@ def new_entry(request, topic_id):
 
     # Display blank or invalid form
     context = {'topic': topic, 'form': form}
-    return render(request, 'learning_logs/new_entry.html', context)           
+    return render(request, 'learning_logs/new_entry.html', context)          
+
+def edit_entry(request, entry_id):
+    """ Edit an exiting entry """
+    entry = Entry.objects.get(id = entry_id)
+    topic = entry.topic
+
+    if (request.method != 'POST' and request.method == 'GET'):
+        # GET request => this is an initial request, pre-fill form with current entry data
+        form = EntryForm(instance=entry)
+    else: 
+        # POST request => updated data submitted, fill form with updated data
+        form = EntryForm(instance = entry, data = request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:topic', topic_id = topic.id)
+
+    context = {'entry': entry, 'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)        
+           

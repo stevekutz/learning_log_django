@@ -384,7 +384,9 @@ The request object is returned from the server and a query is set up. A `context
         {% endblock content %}
     ~~~
 
-### Creating a form for user input
+## Creating forms for user input
+
+### New Topics Form
 1) Using `Djangos` class `ModelForm`, create `forms.py` inside the application folder `learning_logs`
     - `TopicForm` inherits from `forms.ModelForm`
     - The `model` is based from the `Topic` model
@@ -416,7 +418,7 @@ The request object is returned from the server and a query is set up. A `context
         ]
         ~~~    
 
-3) Create the `new_topic` view function
+3) Create the `new_topic` view function in `views.py`
     - In addition to render, the `redirect` function is imported in order to send the user(e.g. redirect) to the topics back after a new topic is written to the database via `form.save()`
     - `form = TopicForm()` assigns an instance of TopicForm to the variable `form`
     - the `context dictionary` contains the template for the form
@@ -499,18 +501,20 @@ The request object is returned from the server and a query is set up. A `context
             labels = {'text': ''}
             widget = {'text': forms.Textarea(attrs = {'cols': 80})}
     ~~~
-7) Add URL for new_entry to `urls.py`
+
+### New Entries Form    
+1) Add URL for new_entry to `urls.py`
     ~~~ py
     # Page for new entries  
     path('new_entry/<int:topic_id>/', views.new_entry, name = 'new_entry'),
     ~~~
-8) Create `entryView()` function
+2) Create `new_entry` View function in `views.py`
     - topic variable is assigned to specific id of topic
     - if request method is `POST`, create an instance of `EntryForm` using the returned `POST` data
     - the `commit=False` argument prevents the database from being updated. The `new_entry` object also requires the `topic` attribute to be set with the `topic_id` before writing to the database
     - the `redirect` function requires 2 arguments this time since the `topic` function requires the specified `view` and the specific `topic_id`
 
-9) Create template for `new_entry`
+3) Create template for `new_entry`
     ~~~ html
     {% extends "learning_logs/base.html" %}
 
@@ -529,10 +533,24 @@ The request object is returned from the server and a query is set up. A `context
     {% endblock content %}
     ~~~
 
-10) Link `new_entry` page in `topic.html`
+4) Link `new_entry` page in `topic.html`
     ~~~ html
     <p>
         <a href = "{% url 'learning_logs:new_entry' topic.id %}"> Add new entry </a>
     </p>
     ~~~
-    
+### Edit Entry Form
+1) Add URL for edit_entry to `urls.py`
+    ~~~ py
+    # form page for editing entries based on entry_id
+        path('edit_entry/<int:entry_id>/' , views.edit_entry, name = 'edit_entry'),
+    ~~~
+2)  Create `edit_entry` View function in `views.py`   
+- Make sure that the `Entry` model is imported at the top of `views.py`
+- the `entry_id` and `topic_id` are stored from the `Entry` object
+- the `GET` request will populate the form with current data in the entry object
+- the `POST` request will populate the form with updated data from the entry object
+- the `redirect` returns the user to the topic page with the recent updates
+- the `edit_entry` template is returned if either
+    - the initial form for editiing is returned
+    - the submitted form is invalid
