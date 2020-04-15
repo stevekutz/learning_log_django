@@ -21,7 +21,7 @@ A virtual environment ties the application with all its required packages into a
 3) Exit or deactivate virtual environment 
     - enter `deactivate` in terminal OR close terminal to exit the virtual environment
 
-## Setting up Django for application
+## Setting up Django
 ### Django Installation
 1) Activate virtual environment
 2) Install Django in terminal using
@@ -153,7 +153,7 @@ admin.site.register(Topic)  # regsters Topic to be managed via admin site
 ### Adding data to the database  
 Topics can be added to the database by clicking `Add`
 
-## Create `Entry` model
+### Create `Entry` model
 A `many-to-one` relationship allows `many entries` to be associated with a single `topic`. This relationship may also be defined as a `one-to-many` where a single `topic` can have many `entries`.
 
 In the `Entry class` model, a `foreign key` will relate an `entry`  with a specific `topic` value. 
@@ -204,14 +204,14 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
     Applying learning_logs.0002_entry... OK
     ~~~
 
-### The typical flow to update the database is:
+## The typical flow to update the database is:
 1) Add specific `class` model to `models.py`
 2) Run `makemigrations` to build a `migrations` file 
     `python manage.py makemigrations` <i>appname</i>
 3) Run `migrations`
     `python manage.py migrate`
 
-## Register `Entry` model
+### Register `Entry` model
 1) Import the `Entry` model
     ~~~ py
     from .models import Topic, Entry    # Entry added
@@ -225,7 +225,15 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 4) Verify that the admin panel shows entries     
     <div> <img src = "learning_logs/admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
 5) Add simple entry info to verify that info is saved to database
-## Mapping a URL      
+## Mapping URLs and creating Views
+- the imported `path` function maps URLs to views
+- the `. import views` imports `views.py` view from within same folder
+- the `app_name` variable defines the `urls.py` file from others with the same name
+- the `urlpaterns` variable defines the pages available within the app
+- the `path` function receives:
+    - the `route` of the base URL
+    - a call to the `index` function within `views.py`
+    - defines a the name of the link to the index page     
 1) Inside the `learning_log` folder, add the module `learning_logs.urls` to `urls.py`
     ~~~ py
     from django.contrib import admin
@@ -248,14 +256,6 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
         path('', views.index, name = 'index'),
     ]
     ~~~
-- the imported `path` function maps URLs to views
-- the `. import views` imports `views.py` view from within same folder
-- the `app_name` variable defines the `urls.py` file from others with the same name
-- the `urlpaterns` variable defines the pages available within the app
-- the `path` function receives:
-    - the `route` of the base URL
-    - a call to the `index` function within `views.py`
-    - defines a the name of the link to the index page
 
 ### Creating Home page `view`
 1) Inside the `learning_logs` folder, add the following to `views.py`
@@ -591,3 +591,6 @@ The request object is returned from the server and a query is set up. A `context
     ...
     {% endblock content %}
     ~~~
+## Setting up User Accounts
+- a new app will used to manage user accounts
+- The `Topic` model will adjusted to reflect each user's topics
