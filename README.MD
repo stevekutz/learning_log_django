@@ -594,5 +594,29 @@ The request object is returned from the server and a query is set up. A `context
 ## Setting up User Accounts
 - a new app will used to manage user accounts
 - The `Topic` model will adjusted to reflect each user's topics
+1) From the virtual environment launched in terminal, create the users app
+    `python manage.py startapp users`
 ### A similar directory structure to the `learning_logs` app is created
-<img src = "users_app.png">
+    <img src = "users_app.png">
+2) Add the users app to `INSTALLED_APPS` in `settings.py`
+        ~~~ py
+        INSTALLED_APPS = [
+            'django.contrib.admin',
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
+            'django.contrib.sessions',
+            'django.contrib.messages',
+            'django.contrib.staticfiles',
+            # my apps
+            'learning_logs',
+            'users', 
+        ]
+        ~~~
+    3) Add URL from users
+        ~~~ py
+        urlpatterns = [
+            path('admin/', admin.site.urls),
+            path('users/', include('users.urls')),
+            path('', include('learning_logs.urls')),     # added
+        ]
+        ~~~
