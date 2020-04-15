@@ -25,7 +25,7 @@ class Entry(models.Model): # inherit from Django's base Model class
     class Meta:
         verbose_name_plural = 'entries'
 
-    # show only first 5 chars of text
+    # show only first 50 chars of text
     def __str__(self):
         """ Return a string representation of the model """
         # return self.text[:50] + "..."

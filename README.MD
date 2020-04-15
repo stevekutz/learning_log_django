@@ -162,7 +162,7 @@ In the `Entry class` model, a `foreign key` will relate an `entry`  with a speci
 
     ~~~ py
     class Entry(models.Model): # inherit from Django's base Model class
-        """ Something specifis learned about a topic """     
+        """ Something specific learned about a topic """     
         topic = models.ForeignKey(Topic,  on_delete=models.CASCADE)  # connects entry to a topic
         text = models.TextField()
         date_added = models.DateTimeField(auto_now_add=True)
@@ -171,7 +171,7 @@ In the `Entry class` model, a `foreign key` will relate an `entry`  with a speci
         class Meta:
             verbose_name_plural = 'entries'
 
-        # show only first 5 chars of text
+        # show only first 50 chars of text
         def __str__(self):
             """ Return a string represenation of the model """
             return self.text[:50] + "..."
@@ -223,7 +223,7 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 3) Run the server
     - `python manage.py runserver`
 4) Verify that the admin panel shows entries     
-    <div> <img src = "learning_logs/admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
+    <div> <img src = "admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
 5) Add simple entry info to verify that info is saved to database
 ## Mapping URLs and creating Views
 - the imported `path` function maps URLs to views
@@ -594,3 +594,5 @@ The request object is returned from the server and a query is set up. A `context
 ## Setting up User Accounts
 - a new app will used to manage user accounts
 - The `Topic` model will adjusted to reflect each user's topics
+### A similar directory structure to the `learning_logs` app is created
+<img src = "users_app.png">
