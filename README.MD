@@ -622,23 +622,78 @@ The request object is returned from the server and a query is set up. A `context
         ]
         ~~~
 ### Building the Login Page
-- Django provides a default `login view`
-- a new `urls.py` is created inside the `learning_log/users` folder
-- the `path` & `include` function must be imported in order to implmement Django's default authentication
-- the login URL will be at `localhost:8000/users/login`
-- within this path the word `users` directs Django to use `users/urls.py`
-- within this path, the word `login` directs Django to send requests to the default login `view`
-    ~~~ py
-    """ Define URL patterns for user """
+1) Create a new `urls.py` file
+    - Django provides a default `login view`
+    - a new `urls.py` is created inside the `learning_log/users` folder
+    - the `path` & `include` function must be imported in order to implmement Django's default authentication
+    - the login URL will be at `localhost:8000/users/login`
+    - within this path the word `users` directs Django to use `users/urls.py`
+    - within this path, the word `login` directs Django to send requests to the default login `view`
+        ~~~ py
+        """ Define URL patterns for user """
 
-    from django.urls import path, include
+        from django.urls import path, include
 
-    app_name = 'users'
+        app_name = 'users'
 
-    urlpatterns = [
-        # Include the default authentication urls
-        path('', include('django.contrib.auth.urls'))
+        urlpatterns = [
+            # Include the default authentication urls
+            path('', include('django.contrib.auth.urls'))
 
-    ]
+        ]
+        ~~~
+2) Create a `login.html`
+- this file is based upon the main `base.html`
+- Django allows templates to be inherited between different apps. This allows `base.html` from the path `learning_logs/templates/learning_logs/base.html` to be used in `users/tempaltes/registration/login.html`
+- the hidden form element `next` provides Django with redirect info for a successful login which is at `index`, the home page
+    ~~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block content %}
+        {% if form.errors %}
+            <p> Username and password did NOT match, Please re-enter </p>
+        {% endif %}    
+
+        <form method = "post" action "{% url 'users:login' %}">
+            {% csrf_token % }
+            {{ form.as_p }}
+
+            <button name = "submit"> Log in </button>
+            <input 
+                type = "hidden" 
+                name = "next" 
+                value = "{% url 'learning_logs:index' %}"
+            />
+        </form> 
+    {% endblock content %} 
+    ~~~
+3) Modify the original `base.html` to handle logged in/out users
+- since every template has its own `user` variable, the `is_authenticated` attribute will either True or False if logged in    
+- a greeting for logged in users is setup if True
+- a login prompt is setup if False
+    ~~~ html
+    <p>
+        <a href = "{% url 'learning_logs:index' %}"> Learning Log </a> - 
+        <a href = "{% url 'learning_logs:topics' %}"> Topics </a> -
+        {% if user.is_authenticated %}
+            Hello, {{ user.username }}
+        {% else %}
+            <a href = "{% url 'users:login' %}"> Log in </a>
+        {% endif %}        
+    </p>
+
+    {% block content %}{% endblock content %}
     ~~~
 
+### Building the Logout page
+1) Append a link to logout to `base.html`
+    ~~~ html 
+    ...
+        {% if user.is_authenticated %}
+            Hello, {{ user.username }}
+            <a href = "{% url 'users:logout' %}"> Log Out </a>
+        {% else %}
+
+    ...
+    ~~~
+2)      
