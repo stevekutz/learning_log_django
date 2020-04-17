@@ -693,7 +693,45 @@ The request object is returned from the server and a query is set up. A `context
             Hello, {{ user.username }}
             <a href = "{% url 'users:logout' %}"> Log Out </a>
         {% else %}
-
     ...
     ~~~
-2)      
+2) Create a simple page to indicate logged out status
+~~~ html
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+    <p> You are now logged out </p>
+
+{% endblock content %}
+~~~
+### Building the Registration page
+- the registration page has its own view and requires the `views module` to be imported in `users/urls.py`
+- the URL pattern `http://localhost:8000/users/register/` will send requests to the `register()` function
+1) Update the `users/urls.py` file
+    ~~~ py
+    """ Define URL patterns for user """
+
+    from django.urls import path, include  # for login page
+    from . import views   # for registration page
+
+    app_name = 'users'
+
+    urlpatterns = [
+        # Include the default authentication urls
+        path('', include('django.contrib.auth.urls')),
+        # Define URL pattern for registration
+        path('register/', views.register, name = 'register'),
+
+    ]
+
+    ~~~
+2) Using `Django's` class `UserCreationForm`, create a view within `users/views.py` for the `register()` view function
+- both `render` and `redirect need to be imported`
+- the login() function must be imported to process credentials
+- `UserCreationForm` must be imported
+- a `GET` request creates a new instance of `UserCreationForm` that contains no data
+- `POST` request data creates a new instance of `UserCreationForm`
+- a valid form:
+    -  writes the user and password hash to the database
+    - creates a session for the user with the `request` and `new_user` objects
+    - redirects user to the own homepage
