@@ -596,7 +596,7 @@ The request object is returned from the server and a query is set up. A `context
 - The `Topic` model will adjusted to reflect each user's topics
 1) From the virtual environment launched in terminal, create the users app
     `python manage.py startapp users`
-### A similar directory structure to the `learning_logs` app is created
+- A similar directory structure to the `learning_logs` app is created
     <img src = "users_app.png">
 2) Add the users app to `INSTALLED_APPS` in `settings.py`
         ~~~ py
@@ -614,9 +614,31 @@ The request object is returned from the server and a query is set up. A `context
         ~~~
     3) Add URL from users
         ~~~ py
+        ...
         urlpatterns = [
             path('admin/', admin.site.urls),
             path('users/', include('users.urls')),
             path('', include('learning_logs.urls')),     # added
         ]
         ~~~
+### Building the Login Page
+- Django provides a default `login view`
+- a new `urls.py` is created inside the `learning_log/users` folder
+- the `path` & `include` function must be imported in order to implmement Django's default authentication
+- the login URL will be at `localhost:8000/users/login`
+- within this path the word `users` directs Django to use `users/urls.py`
+- within this path, the word `login` directs Django to send requests to the default login `view`
+    ~~~ py
+    """ Define URL patterns for user """
+
+    from django.urls import path, include
+
+    app_name = 'users'
+
+    urlpatterns = [
+        # Include the default authentication urls
+        path('', include('django.contrib.auth.urls'))
+
+    ]
+    ~~~
+
