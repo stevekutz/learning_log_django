@@ -791,3 +791,14 @@ The request object is returned from the server and a query is set up. A `context
         {% endif %}  
         ...
     ~~~
+### Creating data restricted to each user
+1) Import the `login_required()` decorator to `learning_logs/views.py`
+    ~~~ py
+    from django.contrib.auth.decorators import login_required
+    ~~~
+2) Direct `Django` to the location of the login page in `settings.py`
+    ~~~ py
+    # My settings
+    LOGIN_URL = 'users:login'
+    ~~~
+3) Add the `@login_required` decorator to all of the views in `learning_logs/views.py` except `index()`    
