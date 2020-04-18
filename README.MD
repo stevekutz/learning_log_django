@@ -735,3 +735,59 @@ The request object is returned from the server and a query is set up. A `context
     -  writes the user and password hash to the database
     - creates a session for the user with the `request` and `new_user` objects
     - redirects user to the own homepage
+    ~~~ py
+    from django.shortcuts import render, redirect
+    from django.contrib.auth import login
+    from django.contrib.auth.forms import UserCreationForm
+
+    # Create your views here.
+
+    def register(request):
+        """ Regsiter a new user if GET request made """
+        if request.method != 'POST' and request.method == 'GET':
+            # present user a registration form with no data
+            form = UserCreationForm()
+        else:     
+            # process a completed form with POST data
+            form = UserCreationForm(data = request.POST)
+
+            if form.is_valid():
+                new_user = form.save()
+                # Log in user and the redirect to home page
+
+                login(request, new_user)
+                return redirect('learning_logs:index')
+
+        # Display blank or invalid form
+        context = { 'form': form }        
+        return render(request, 'registration/register.html', context)
+    ~~~
+3) Build template for user registration
+- Django automatically notifies user if login form is not filled in correctly
+    ~~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block content %}
+
+        <form method = "post" action = "{% url 'users:register' %}">
+            {% csrf_token %}
+            {{form.as_p}}
+
+            <button name = "submit"> Register </button>
+            <input 
+                type = "hidden" 
+                name = "next" 
+                value = "{% url 'learning_logs:index' %}" 
+            />
+        </form>
+    {% endblock content %}  
+    ~~~   
+4) Modify `base.html` to show registration link if user not logged in    
+    ~~~ html
+        ...
+        {% else %}
+            <a href = "{% url 'users:register' %}"> Register </a> - 
+            <a href = "{% url 'users:login' %}"> Log in </a>
+        {% endif %}  
+        ...
+    ~~~

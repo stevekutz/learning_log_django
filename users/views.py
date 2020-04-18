@@ -6,20 +6,20 @@ from django.contrib.auth.forms import UserCreationForm
 
 def register(request):
     """ Regsiter a new user if GET request made """
-    if request.method != 'POST' and request.method == 'GET':
+    if request.method != 'POST':
         # present user a registration form with no data
         form = UserCreationForm()
     else:     
         # process a completed form with POST data
         form = UserCreationForm(data = request.POST)
 
-        if form.is_valid:
+        if form.is_valid():
             new_user = form.save()
             # Log in user and the redirect to home page
 
             login(request, new_user)
             return redirect('learning_logs:index')
 
-    # Display blank of invalid form
+    # Display blank or invalid form
     context = { 'form': form }        
     return render(request, 'registration/register.html', context)
