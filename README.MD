@@ -704,6 +704,24 @@ The request object is returned from the server and a query is set up. A `context
 
 {% endblock content %}
 ~~~
+3) `IMPORTANT` The logout page will not be shown and the admin panel logged out message will appear unless the apps you created come before `django.contrib.admin`  within `INSTALLED_APP` inside of `settings.py`
+    ~~~ py
+    INSTALLED_APPS = [
+        # apps I created must come before django.contrib.admin in order for logout page to be shown, ohterwsie admin logout is shown 
+        'learning_logs',
+        'users', 
+
+
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+
+    ]
+    ~~~
+
 ### Building the Registration page
 - the registration page has its own view and requires the `views module` to be imported in `users/urls.py`
 - the URL pattern `http://localhost:8000/users/register/` will send requests to the `register()` function
@@ -791,7 +809,10 @@ The request object is returned from the server and a query is set up. A `context
         {% endif %}  
         ...
     ~~~
-### Creating data restricted to each user
+### Restricting access to pages
+- Each topic is owned by a user
+- the @login_required decorator(a directive placed before a function) verified if a user is logged in
+- users not logged in are redirected to the login page
 1) Import the `login_required()` decorator to `learning_logs/views.py`
     ~~~ py
     from django.contrib.auth.decorators import login_required
@@ -801,4 +822,4 @@ The request object is returned from the server and a query is set up. A `context
     # My settings
     LOGIN_URL = 'users:login'
     ~~~
-3) Add the `@login_required` decorator to all of the views in `learning_logs/views.py` except `index()`    
+3) Restrict access to pages by adding the `@login_required` decorator to all of the views in `learning_logs/views.py` except `index()`    
