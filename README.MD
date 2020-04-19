@@ -822,4 +822,21 @@ The request object is returned from the server and a query is set up. A `context
     # My settings
     LOGIN_URL = 'users:login'
     ~~~
-3) Restrict access to pages by adding the `@login_required` decorator to all of the views in `learning_logs/views.py` except `index()`    
+3) Restrict access to pages by adding the `@login_required` decorator to all of the views in `learning_logs/views.py` except `index()` 
+### Connnect data to specific users
+1) Add the User model to `learning/logs/models.py`   
+    ~~~ py
+    from django.contrib.auth.models import User
+
+    ~~~
+2) Add a new field called `owner` to `Topic` 
+- This will create a foreign key relationship with the `User` model
+- the `on_delete=models.CASCADE` option will remove all topic associated with a deleted user
+    ~~~ py
+    class Topic(models.Model): # inherit from Django's base Model class 
+        """ Topic that the use in learning about """
+        text = models.CharField(max_length=200) # allocates 200 chars in database
+        data_added = models.DateTimeField(auto_now_add=True) # sets to current data/time when new topic created
+        owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    ~~~
+    
