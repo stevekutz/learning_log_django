@@ -1,13 +1,13 @@
 # Learning Logs project
 1) Base project from `Python Crash course 2nd ed` by `Eric Matthes`
-2) Prior to deployment, the following steps are requried to launch project
+2) Prior to deployment, the following steps are required to launch project
     - Launch virtual environment 
         - `source ll_env/bin/activate`
     - Run the Django server
         - `python manage.py runserver`
 3) Each `Model` is essentially a special class Django uses to present data
 4) Each `View` is a special function that processes the data of user request and presents a UI to the browser. A base `template` is often used to prepare the UI for different views. 
-
+5) The interactive shell is useful for debugging within the virtual environment `python manage.py shell`
 ## Initial Setup
 
 ### Virtual environment
@@ -839,4 +839,101 @@ The request object is returned from the server and a query is set up. A `context
         data_added = models.DateTimeField(auto_now_add=True) # sets to current data/time when new topic created
         owner = models.ForeignKey(User, on_delete=models.CASCADE)
     ~~~
-    
+### Migrate the database
+1) `python manage.py makemigrations learning_logs`
+2) Select option 1 at the prompt choice to `provide a one-off default now`
+3) Enter a default value of 1
+4) Complete the migration by entering `python manage.py migrate`    
+### Restrict Topics to particular users
+1) Modify `views.py` to only show topics that belong to a specific user
+- only topics objects that match the currently logged in user request.user are provided to the `topics` query object
+    ~~~ py
+        @login_required
+        def topics(request):
+            """ Show all topics """
+            # topics = Topic.objects.order_by('data_added')
+            topics = Topic.objects.filter(owner=request.user).order_by('data_added')
+            context = {'topics': topics}  
+    ~~~
+2) Protect users topics from direct URL links
+- add `from django.http import Http404` to top of `views.py`
+    ~~~ py
+    from django.shortcuts import render, redirect
+    from django.contrib.auth.decorators import login_required
+    from django.http import Http404
+    ~~~
+- redirect to 404 page if logged in user is not topic .owner by adding this to `def_topic` and `edit_entry`
+    ~~~ py
+        # Make sure the topic belongs to the current user
+        if topic.owner != request.user:
+            raise Http404
+    ~~~
+- `def_topic` will now look like
+    ~~~ py
+    @login_required
+    def topic(request, topic_id):
+        """ Show a single topic and all of its entries""" 
+        topic = Topic.objects.get(id=topic_id)
+        
+        # Make sure the topic belongs to the current user
+        if topic.owner != request.user:
+            raise Http404
+
+        entries = topic.entry_set.order_by('-date_added')
+        context = {'topic': topic, 'entries': entries}
+        return render(request, 'learning_logs/topic.html', context)
+    ~~~
+- `edit_entry` will now look like
+    ~~~ py
+    @login_required
+    def edit_entry(request, entry_id):
+        """ Edit an exiting entry """
+        entry = Entry.objects.get(id = entry_id)
+        topic = entry.topic
+
+        # Make sure the topic belongs to the current user
+        if topic.owner != request.user:
+            raise Http404
+
+        if (request.method != 'POST' and request.method == 'GET'):
+            # GET request => this is an initial request, pre-fill form with current entry data
+            form = EntryForm(instance=entry)
+        else: 
+            # POST request => updated data submitted, fill form with updated data
+            form = EntryForm(instance = entry, data = request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('learning_logs:topic', topic_id = topic.id)
+
+        context = {'entry': entry, 'topic': topic, 'form': form}
+        return render(request, 'learning_logs/edit_entry.html', context)        
+    ~~~
+- the error message `Django IntegrityError - NOT NULL constraint failed: learning_logs_topic.owner_id` will appear if a user tries to create a new topic
+- the new topic must have a value in the user that owns)e.g. is associated with) that topic
+- the `new_topic = form.save(commit=False)` prevents writing to the database
+- the `new_topic.owner = request.user` creates the association between the user and topic
+- `new_topic.save()` writes the new topic to the database
+- after modifying `new_topic` , new topics & entries only specific to a particular users can now be created
+    ~~~ py
+    @login_required
+    def new_topic(request):
+        """ Add new topic """       
+        if (request.method != 'POST' and request.method == 'GET'):
+            # There was no POST data sumitted, return blank form
+            form = TopicForm()
+        else:
+            # POST data exists, process data within request.POST
+            form = TopicForm(data = request.POST)
+            if form.is_valid():
+                new_topic = form.save(commit=False)
+                new_topic.owner = request.user
+                new_topic.save()
+                
+                # form.save()
+                return redirect('learning_logs:topics')
+
+        # Display a blank or invalid form
+        context = {'form': form}
+        return render(request, 'learning_logs/new_topic.html', context)           
+
+    ~~~
