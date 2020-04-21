@@ -10,6 +10,13 @@ def index(request):
     """ The home page for Learning Log """
     return render(request, 'learning_logs/index.html')
 
+# refactored check logged in user to owner of topic
+def check_topic_owner(topic, request):
+    if topic.owner != request.user:
+        raise Http404    
+    
+#    return None   
+
 @login_required
 def topics(request):
     """ Show all topics """
@@ -23,9 +30,12 @@ def topic(request, topic_id):
     """ Show a single topic and all of its entries""" 
     topic = Topic.objects.get(id=topic_id)
     
-    # Make sure the topic belongs to the current user
-    if topic.owner != request.user:
-        raise Http404
+    # # Make sure the topic belongs to the current user
+    # if topic.owner != request.user:
+    #     raise Http404
+
+    # refactored
+    check_topic_owner(topic, request)
 
     entries = topic.entry_set.order_by('-date_added')
     context = {'topic': topic, 'entries': entries}
@@ -57,6 +67,9 @@ def new_entry(request, topic_id):
     """ Add new entry for specific topic """    
     topic = Topic.objects.get(id = topic_id)
 
+    # refactored
+    check_topic_owner(topic, request)
+
     if (request.method != 'POST' and request.method == 'GET'):
         # No POST data submitted, return blank form
         form = EntryForm()
@@ -80,9 +93,12 @@ def edit_entry(request, entry_id):
     entry = Entry.objects.get(id = entry_id)
     topic = entry.topic
 
-    # Make sure the topic belongs to the current user
-    if topic.owner != request.user:
-        raise Http404
+    # # Make sure the topic belongs to the current user
+    # if topic.owner != request.user:
+    #     raise Http404
+
+    # refactored
+    check_topic_owner(topic, request)
 
     if (request.method != 'POST' and request.method == 'GET'):
         # GET request => this is an initial request, pre-fill form with current entry data

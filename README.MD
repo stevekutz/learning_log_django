@@ -937,3 +937,14 @@ The request object is returned from the server and a query is set up. A `context
         return render(request, 'learning_logs/new_topic.html', context)           
 
     ~~~
+### Refactor for restricting users topics   
+- a function called `check_new_entry` is added into 
+    - new_entry
+    - edit_entry
+    - topic
+- this prevents a user from attempting to access the topic URL of another user and creating new entries
+~~~ py
+def check_topic_owner(topic, request):
+    if topic.owner != request.user:
+        raise Http404
+~~~
