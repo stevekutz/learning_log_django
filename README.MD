@@ -971,8 +971,91 @@ def check_topic_owner(topic, request):
     ~~~
 3) Replace `learning_logs/base.html` with the following
 - `{% load bootstrap4 %}` loads the available template tags in `django-bootstrap4`
-- witht the `head` section, the following loads all available Bootstrap style files
+- within the `head` section, the following loads all available Bootstrap style files
     ~~~ html
+    {% load bootstrap4 %}
+
+    <!doctype html>
+    <html lang="en" >
+
+    <head>
+        <meta charset = "utf-8">
+        <meta name = "viewport" content = "width=device-width", 
+            initial-scale=1, 
+            shrink-to-fit="no"
+        >
+        <title>Learning Log</title>
+
         {% bootstrap_css %}
-        {% bootstrap_javascript jquery = 'full' %}
+        {% bootstrap_javascript jquery='full' %}
+
+    </head>
+
+    <body>
+
+        <nav class = "navbar navbar-expand-md navbar-light bg-light mb-4 border">
+
+            <a class = "navbar-brand" href = "{% url 'learning_logs:index' %}"> Learning Log </a>
+
+            <button class = "navbar-toggler" type = "button" data-toggle="collapse"
+                data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span></button>
+
+                <div class = "collapse navbar-collapse" id = "navbarCollapse"> 
+                    <ul>
+                        <li class = "nav-item">
+                            <a class = "nav-link" href = "{% url 'learning_logs:topics'%}"> Topics </a>
+                        </li>
+                    </ul>        
+                    <ul class = "navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
+                            <li class = "nav-item">
+                                <span class = "navbar-text">Hello, {{ user.username }} .</span>
+                            </li>
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'users:logout' %}"> Log out </a>
+                            </li>
+                        {% else %}
+                            <li class = "nav-item">
+                                <a class = "nav-link" href = "{% url 'users:register' %}"> Register </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'users:login' %}"> Log in </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+        </nav>
+        <main role = "main" class = "container">
+            <div class = "pb-2 mb-2 border-bottom">
+                {% block page_header %} {% endblock page_header %}
+            </div> 
+
+            <div>
+                {% block content %}{% endblock content %}
+            </div>
+        </main>
+
+    </body>
+
+    </html>
+    ~~~
+4) Update index.html with the following
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
+
+    {% block page_header %}
+
+        <div class = "jumbotron">
+            <h1 class = "display-3"> Track your learning </h1>
+            
+            <p class = "lead"> Make your own Learning Log, and keep a list of the 
+            topics you've learned about. Whenever you learn something new about a topc,
+            make an entry summarizing what you've learned </p>
+
+            <a class = "btn btn-lg btn-primary" href = "{% url 'users:register' %}" role = "button"> Register &raquo; </a>
+
+        </div>
+    {% endblock page_header %}
     ~~~
