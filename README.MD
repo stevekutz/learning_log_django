@@ -707,7 +707,7 @@ The request object is returned from the server and a query is set up. A `context
 3) `IMPORTANT` The logout page will not be shown and the admin panel logged out message will appear unless the apps you created come before `django.contrib.admin`  within `INSTALLED_APP` inside of `settings.py`
     ~~~ py
     INSTALLED_APPS = [
-        # apps I created must come before django.contrib.admin in order for logout page to be shown, ohterwsie admin logout is shown 
+        # apps I created must come before django.contrib.admin in order for logout page to be shown, otherwise admin logout is shown 
         'learning_logs',
         'users', 
 
@@ -948,3 +948,31 @@ def check_topic_owner(topic, request):
     if topic.owner != request.user:
         raise Http404
 ~~~
+
+## Styling !
+### Setup styling
+1) From the virtual environment, install `django-bootstrap4` using pip
+    ~~~ bash
+    pip install django-bootstrap4
+    ~~~
+2) Update the `INSTALLED_APPS` section of `settings.py`
+    ~~~ py
+    ...
+    INSTALLED_APPS = [
+        # my apps
+        'learning_logs',
+        'users', 
+
+        # 3rd party apps
+        'bootstrap4',
+
+        'django.contrib.admin',
+    ...
+    ~~~
+3) Replace `learning_logs/base.html` with the following
+- `{% load bootstrap4 %}` loads the available template tags in `django-bootstrap4`
+- witht the `head` section, the following loads all available Bootstrap style files
+    ~~~ html
+        {% bootstrap_css %}
+        {% bootstrap_javascript jquery = 'full' %}
+    ~~~
