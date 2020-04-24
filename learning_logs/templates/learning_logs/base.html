@@ -28,7 +28,7 @@
             <span class="navbar-toggler-icon"></span></button>
 
             <div class = "collapse navbar-collapse" id = "navbarCollapse"> 
-                <ul>
+                <ul class = "navbar-nav mr-auto">
                     <li class = "nav-item">
                         <a class = "nav-link" href = "{% url 'learning_logs:topics'%}"> Topics </a>
                     </li>
@@ -36,7 +36,7 @@
                 <ul class = "navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                         <li class = "nav-item">
-                            <span class = "navbar-text">Hello, {{ user.username }} .</span>
+                            <span class = "navbar-text">Hello, {{ user.username }} </span>
                         </li>
                         <li class = "nav-item">
                             <a class = "nav-link" href = "{% url 'users:logout' %}"> Log out </a>

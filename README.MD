@@ -1003,7 +1003,7 @@ def check_topic_owner(topic, request):
                 <span class="navbar-toggler-icon"></span></button>
 
                 <div class = "collapse navbar-collapse" id = "navbarCollapse"> 
-                    <ul>
+                    <ul class = "navbar-nav mr-auto">
                         <li class = "nav-item">
                             <a class = "nav-link" href = "{% url 'learning_logs:topics'%}"> Topics </a>
                         </li>
