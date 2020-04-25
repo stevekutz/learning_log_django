@@ -1084,3 +1084,36 @@ def check_topic_owner(topic, request):
         </form> 
     {% endblock content %}   
     ~~~
+6) Update `topic.html`
+    ~~~ html 
+    {% extends 'learning_logs/base.html' %}
+
+    {% block page_header %}
+        <h3>{{topic}} </h3>
+    {% endblock page_header %}    
+
+    {% block content %}
+    <p>
+        <a href = "{% url 'learning_logs:new_entry' topic.id %}"> Add new entry </a>
+    </p>
+
+
+    {% for entry in entries %}
+        <div class="card mb-3">
+            <h4 class = "card-header">
+                {{ entry.date_added|date:'M d, Y H:i' }}
+                <small>
+                    <a href = "{% url 'learning_logs:edit_entry' entry.id %}"> Edit entry </a>
+                </small>
+            </h4>
+            <div class="card-body">
+                {{ entry.text|linebreaks }}
+            </div>    
+        </div>
+    {% empty %}    
+        <li> There are no entries for this topic yet </li>
+    {% endfor %}    
+
+
+    {% endblock content %}
+    ~~~
