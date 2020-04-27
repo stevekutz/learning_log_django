@@ -31,13 +31,13 @@ A virtual environment ties the application with all its required packages into a
     - `django-admin.py startproject learning_log .`
 2) this will create the following :
     - `manage.py` a project specific file that directs commands to various parts of Django. Specifically, it
-        - puts proejct packages on the `sys.path`
+        - puts project packages on the `sys.path`
         - sets up the `DJANGO_SETTINGS_MODULE` environment variable so that it points to the project settings file
     - `learning_log` directory that contains:
         - settings.py >> manages Django behavior   
         - urls.py >> manages pages Django creates
         - wsgi.py >> manages a `web server gateway interface`
-    #### Although `django-admin` is the CLI for adminstrative tasks, it is simpler to manage a project through `manage.py`
+    #### Although `django-admin` is the CLI for administrative tasks, it is simpler to manage a project through `manage.py`
 ### Database Installation
 1) Create the database (SQLite by default):
     - `python manage.py migrate`
@@ -48,7 +48,7 @@ A virtual environment ties the application with all its required packages into a
     - The following default page can be seen on a browser directed to `http://127.0.0.1:8000/`
         <div>  <img  src = './django_setup_good.png' width = 40%/> </div>
 
-2) If you accidentally close the terminal in VSCODE and need to quit the server, enter the following in a new terminal
+2) If you accidentally close the terminal in VS Code and need to quit the server, enter the following in a new terminal
     - `sudo kill $(lsof -t -i:8000)`
 3) Quit the server using `CONTROL-C`    
 ### Create Django setup files for new app called `learning_logs`
@@ -62,7 +62,7 @@ A virtual environment ties the application with all its required packages into a
     - `admin.py` >> displays models in the django admin panel
     - `views.py` >> views are a Python function or class that takes a web request and returns a web response. In Django, views have to be created in the app's views.py file  
 ### Define models
-Models are simply clases that define how Danjgo should interact with the app's data.  
+Models are simply classes that define how Django should interact with the app's data.  
 
 Add the `Topic` class to `models.py`
 ~~~ python
@@ -95,7 +95,7 @@ INSTALLED_APPS = [
 ~~~
 ### Update database for `Topic model` data
 The `makemigrations` command builds a migrations file to create a table for the Topic model. In this case, it creates `0001_initial.py`
-1) From the virual environment in terminal run:
+1) From the virtual environment in terminal run:
 
     `python manage.py makemigrations learning_logs`
 2) The following output indicates that the file was successfully created
@@ -126,7 +126,7 @@ This will modify database with the latest migrations file.
 
 ## Setting up `Admin Site`
 ### Create `superuser`
-Adminstrators of site are `superusers` and have access rights to all priviledges (actions) and also maintain the priviledges of users of the site. A user has restrictive acces, typically read/write of their data. 
+Administrators of site are `superusers` and have access rights to all privileges (actions) and also maintain the privileges of users of the site. A user has restrictive access, typically read/write of their data. 
 1) Create a superuser
 
     `python manage.py createsuperuser`
@@ -143,7 +143,7 @@ from django.contrib import admin
 
 # Register your models here.
 from learning_logs.models import Topic  # import Topic model to be registered
-admin.site.register(Topic)  # regsters Topic to be managed via admin site
+admin.site.register(Topic)  # registers Topic to be managed via admin site
 ~~~
 - The admin can now be seen on a browser directed to `http://127.0.0.1:8000/admin`
         <div>  <img  src = './admin_login.png' width = 40%/> </div>
@@ -166,14 +166,14 @@ In the `Entry class` model, a `foreign key` will relate an `entry`  with a speci
         topic = models.ForeignKey(Topic,  on_delete=models.CASCADE)  # connects entry to a topic
         text = models.TextField()
         date_added = models.DateTimeField(auto_now_add=True)
-        # tells Django to use  'Entries' deal with mutliple entries
-        # otherwise Django creates 'Entrys'
+        # tells Django to use  the word 'entries' deal with multiple entries
+        # otherwise Django creates the word 'entrys'
         class Meta:
             verbose_name_plural = 'entries'
 
         # show only first 50 chars of text
         def __str__(self):
-            """ Return a string represenation of the model """
+            """ Return a string representation of the model """
             return self.text[:50] + "..."
 
     ~~~
@@ -328,7 +328,7 @@ The request object is returned from the server and a query is set up. A `context
         {% extends "learning_logs.base.html" %}
     ~~~
 
-2) Within the `{% block content %}` tags, a special tag that emulates a `for loop` is implemented. This willrender topics if present. Otherwsie default content is provided
+2) Within the `{% block content %}` tags, a special tag that emulates a `for loop` is implemented. This will render topics if present. Otherwise default content is provided
     ~~~ py
         {% for topic in topics %}
                 <li> {{topic}} </li>
@@ -351,7 +351,7 @@ The request object is returned from the server and a query is set up. A `context
         # detail page for a single topic based on id
         path('topics/<int:topic_id>/', views.topic, name = 'topic')
     ~~~
-2) Create a `view function` within `views.py` that acccepts a parameter for the topic_id in addition to the `request object`. Queries are created for `topic` and `entries`.
+2) Create a `view function` within `views.py` that accepts a parameter for the topic_id in addition to the `request object`. Queries are created for `topic` and `entries`.
     ~~~ py
         def topic(request, topic_id):
             """ Show a single topic and all of its entries""" 
@@ -426,7 +426,7 @@ The request object is returned from the server and a query is set up. A `context
         def new_topic(request):
         """ Add new topic """       
         if (request.method != 'POST' and request.method == 'GET'):
-            # There was no POST data sumitted, return blank form
+            # There was no POST data submitted, return blank form
             form = TopicForm()
         else:
             # POST data exists, process data within request.POST
@@ -487,7 +487,7 @@ The request object is returned from the server and a query is set up. A `context
         ~~~
 
 6) Append to the import in `forms.py` and add a class to manage user entries
-    - the default Django widget is overidden with the custom widget attribute to make the test area 80 coluimns wide(default would be 40 columns)
+    - the default Django widget is overridden with the custom widget attribute to make the test area 80 columns wide(default would be 40 columns)
     - The labels field is assigned a blank label
     ~~~ py
     from .models import Topic, Entry
@@ -552,7 +552,7 @@ The request object is returned from the server and a query is set up. A `context
 - the `POST` request will populate the form with updated data from the entry object
 - the `redirect` returns the user to the topic page with the recent updates
 - the `edit_entry` template is returned if either
-    - the initial form for editiing is returned
+    - the initial form for editing is returned
     - the submitted form is invalid
     ~~~ py
     def edit_entry(request, entry_id):
@@ -625,7 +625,7 @@ The request object is returned from the server and a query is set up. A `context
 1) Create a new `urls.py` file
     - Django provides a default `login view`
     - a new `urls.py` is created inside the `learning_log/users` folder
-    - the `path` & `include` function must be imported in order to implmement Django's default authentication
+    - the `path` & `include` function must be imported in order to implemement Django's default authentication
     - the login URL will be at `localhost:8000/users/login`
     - within this path the word `users` directs Django to use `users/urls.py`
     - within this path, the word `login` directs Django to send requests to the default login `view`
