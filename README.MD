@@ -26,10 +26,10 @@ A virtual environment ties the application with all its required packages into a
 1) Activate virtual environment
 2) Install Django in terminal using
     - `pip install Django`
-### Create new project called `learning_log`    
-1) !! you MUST include the period at the end !! Create project using 
+### Create new `project` called `learning_log`    
+1) !! You MUST include the period at the end !! Create project using 
     - `django-admin.py startproject learning_log .`
-2) this will create the following :
+2) This will create the following :
     - `manage.py` a project specific file that directs commands to various parts of Django. Specifically, it
         - puts project packages on the `sys.path`
         - sets up the `DJANGO_SETTINGS_MODULE` environment variable so that it points to the project settings file
@@ -51,7 +51,7 @@ A virtual environment ties the application with all its required packages into a
 2) If you accidentally close the terminal in VS Code and need to quit the server, enter the following in a new terminal
     - `sudo kill $(lsof -t -i:8000)`
 3) Quit the server using `CONTROL-C`    
-### Create Django setup files for new app called `learning_logs`
+### Create Django setup files for new `app` called `learning_logs`
 1) In a new terminal window, activate the virtual environment 
     -`source ll_env/bin/activate` 
 2) Run startapp to build initial infrastructure files
@@ -60,7 +60,7 @@ A virtual environment ties the application with all its required packages into a
         <div><img src  = './learning_logs.png' /></div>
     - `models.py` >> manages app data
     - `admin.py` >> displays models in the django admin panel
-    - `views.py` >> views are a Python function or class that takes a web request and returns a web response. In Django, views have to be created in the app's views.py file  
+    - `views.py` >> views are a Python function or class that takes a web request and returns a web response. In Django, views have to be created in the `views.py` file within each `app` inside the `project` 
 ### Define models
 Models are simply classes that define how Django should interact with the app's data.  
 
@@ -373,7 +373,7 @@ The request object is returned from the server and a query is set up. A `context
         <ul>
         {% for entry in entries %}
             <li>
-            <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>
+            <p>{{ entry.date_added|date:'M d, Y h:i' }}</p>
             <p>{{ entry.text|linebreaks }}</p>
             </li>
         {% empty %}    
