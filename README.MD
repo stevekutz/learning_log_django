@@ -138,15 +138,16 @@ Administrators of site are `superusers` and have access rights to all privileges
 ### Register Model
 Any models added to `models.py` must be registered manually in `admin.py`
 
-~~~ py
-from django.contrib import admin
+  ~~~ py
+      from django.contrib import admin
 
-# Register your models here.
-from learning_logs.models import Topic  # import Topic model to be registered
-admin.site.register(Topic)  # registers Topic to be managed via admin site
-~~~
+      # Register your models here.
+      from learning_logs.models import Topic  # import Topic model to be registered
+      admin.site.register(Topic)  # registers Topic to be managed via admin site
+  ~~~
+
 - The admin can now be seen on a browser directed to `http://127.0.0.1:8000/admin`
-        <div>  <img  src = './admin_login.png' width = 40%/> </div>
+            <div>  <img  src = './admin_login.png' width = 40%/> </div>
 1) Login using the `superuser` credentials    
 2) The Site Adminstration interface should now display
    <div>  <img  src = './admin_logged_in.png' width = 40%/> </div>
@@ -215,7 +216,7 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
 1) Import the `Entry` model
     ~~~ py
     from .models import Topic, Entry    # Entry added
-    ~~
+    ~~~
 2) Register the `Entry` model
     ~~~ py
     admin.site.register(Entry)
@@ -226,14 +227,14 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
     <div> <img src = "admin_panel_shows entries_topics.png" width = "40%" alt = "entries within topics shown"/></div>
 5) Add simple entry info to verify that info is saved to database
 ## Mapping URLs and creating Views
-- the imported `path` function maps URLs to views
-- the `. import views` imports `views.py` view from within same folder
-- the `app_name` variable defines the `urls.py` file from others with the same name
-- the `urlpaterns` variable defines the pages available within the app
-- the `path` function receives:
-    - the `route` of the base URL
-    - a call to the `index` function within `views.py`
-    - defines a the name of the link to the index page     
+   - the imported `path` function maps URLs to views
+   - the `. import views` imports `views.py` view from within same folder
+   - the `app_name` variable defines the `urls.py` file from others with the same name
+   - the `urlpaterns` variable defines the pages available within the app
+   - the `path` function receives:
+       - the `route` of the base URL
+       - a call to the `index` function within `views.py`
+       - defines a the name of the link to the index page     
 1) Inside the `learning_log` folder, add the module `learning_logs.urls` to `urls.py`
     ~~~ py
     from django.contrib import admin
@@ -265,9 +266,9 @@ A `many-to-many` relationship allows `many entries` to be associated with a `top
         """ The home page for Learning Log """
         return render(request, 'learning_logs/index.html')
     ~~~
-The render function receives:
-- the `request object`
-- a `template` used to build define how Django renders a page
+    The render function receives:
+    - the `request object`
+    - a `template` used to build define how Django renders a page
 
 
 ### Creating a base template
@@ -308,19 +309,21 @@ The render function receives:
     ~~~
 
 2) Add to the top of `views.py`
+- This is needed to import the data needed
+
     ~~~ py
-    path('', views.index, name = 'index'),
+    from .models import Topic
     ~~~
-This is needed to import the data needed
-3) Add the `topics()` function to `views.py`
+
+1) Add the `topics()` function to `views.py`
     ~~~ py
         def topics(request):
-            """ Show all topics """
-            topics = Topic.objects.order_by('data_added')
-            context = {'topics': topics}
-            return render(request, 'learning_logs/topics.html', context)
+        """ Show all topics """
+        topics = Topic.objects.order_by('data_added')
+        context = {'topics': topics}
+        return render(request, 'learning_logs/topics.html', context)
     ~~~
-The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
+- The request object is returned from the server and a query is set up. A `context` (e.g. dictionary with keys which represent names for the types of data) is returned to the template
 
 ### Creating Topics template
 1) The `{% extends %}` tag tells `Django` to inherit from the defined base.html file.
@@ -546,33 +549,33 @@ The request object is returned from the server and a query is set up. A `context
         path('edit_entry/<int:entry_id>/' , views.edit_entry, name = 'edit_entry'),
     ~~~
 2)  Create `edit_entry` View function in `views.py`   
-- Make sure that the `Entry` model is imported at the top of `views.py`
-- the `entry_id` and `topic_id` are stored from the `Entry` object
-- the `GET` request will populate the form with current data in the entry object
-- the `POST` request will populate the form with updated data from the entry object
-- the `redirect` returns the user to the topic page with the recent updates
-- the `edit_entry` template is returned if either
-    - the initial form for editing is returned
-    - the submitted form is invalid
-    ~~~ py
-    def edit_entry(request, entry_id):
-        """ Edit an exiting entry """
-        entry = Entry.objects.get(id = entry_id)
-        topic = entry.topic
+    - Make sure that the `Entry` model is imported at the top of `views.py`
+    - the `entry_id` and `topic_id` are stored from the `Entry` object
+    - the `GET` request will populate the form with current data in the entry object
+    - the `POST` request will populate the form with updated data from the entry object
+    - the `redirect` returns the user to the topic page with the recent updates
+    - the `edit_entry` template is returned if either
+        - the initial form for editing is returned
+        - the submitted form is invalid
+        ~~~ py
+        def edit_entry(request, entry_id):
+            """ Edit an exiting entry """
+            entry = Entry.objects.get(id = entry_id)
+            topic = entry.topic
 
-        if (request.method != 'POST' and request.method == 'GET'):
-            # GET request => this is an initial request, pre-fill form with current entry data
-            form = EntryForm(instance=entry)
-        else: 
-            # POST request => updated data submitted, fill form with updated data
-            form = EntryForm(instance = entry, data = request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('learning_logs:topic', topic_id = topic.id)
+            if (request.method != 'POST' and request.method == 'GET'):
+                # GET request => this is an initial request, pre-fill form with current entry data
+                form = EntryForm(instance=entry)
+            else: 
+                # POST request => updated data submitted, fill form with updated data
+                form = EntryForm(instance = entry, data = request.POST)
+                if form.is_valid():
+                    form.save()
+                    return redirect('learning_logs:topic', topic_id = topic.id)
 
-        context = {'entry': entry, 'topic': topic, 'form': form}
-        return render(request, 'learning_logs/edit_entry.html', context)    
-    ~~~
+            context = {'entry': entry, 'topic': topic, 'form': form}
+            return render(request, 'learning_logs/edit_entry.html', context)    
+        ~~~
 3) Link to edit_entry page to each topic in `topic.html`
     ~~~ html
     {% extends 'learning_logs/base.html' %}
@@ -592,13 +595,13 @@ The request object is returned from the server and a query is set up. A `context
     {% endblock content %}
     ~~~
 ## Setting up User Accounts
-- a new app will used to manage user accounts
-- The `Topic` model will adjusted to reflect each user's topics
-1) From the virtual environment launched in terminal, create the users app
-    `python manage.py startapp users`
-- A similar directory structure to the `learning_logs` app is created
+   - a new app will used to manage user accounts
+   - The `Topic` model will adjusted to reflect each user's topics
+   1) From the virtual environment launched in terminal, create the users app
+       `python manage.py startapp users`
+   - A similar directory structure to the `learning_logs` app is created
     <img src = "users_app.png">
-2) Add the users app to `INSTALLED_APPS` in `settings.py`
+1) Add the users app to `INSTALLED_APPS` in `settings.py`
         ~~~ py
         INSTALLED_APPS = [
             'django.contrib.admin',
@@ -612,7 +615,7 @@ The request object is returned from the server and a query is set up. A `context
             'users', 
         ]
         ~~~
-    3) Add URL from users
+    1) Add URL from users
         ~~~ py
         ...
         urlpatterns = [
@@ -643,10 +646,10 @@ The request object is returned from the server and a query is set up. A `context
         ]
         ~~~
 2) Create a `login.html`
-- this file is based upon the main `base.html`
-- Django allows templates to be inherited between different apps. This allows `base.html` from the path `learning_logs/templates/learning_logs/base.html` to be used in `users/tempaltes/registration/login.html`
-- the hidden form element `next` provides Django with redirect info for a successful login which is at `index`, the home page
-    ~~~~ html
+   - this file is based upon the main `base.html`
+   - Django allows templates to be inherited between different apps. This allows `base.html` from the path `learning_logs/templates/learning_logs/base.html` to be used in `users/tempaltes/registration/login.html`
+   - the hidden form element `next` provides Django with redirect info for a successful login which is at `index`, the home page
+    ~~~ html
     {% extends "learning_logs/base.html" %}
 
     {% block content %}
@@ -668,9 +671,9 @@ The request object is returned from the server and a query is set up. A `context
     {% endblock content %} 
     ~~~
 3) Modify the original `base.html` to handle logged in/out users
-- since every template has its own `user` variable, the `is_authenticated` attribute will either True or False if logged in    
-- a greeting for logged in users is setup if True
-- a login prompt is setup if False
+   - since every template has its own `user` variable, the `is_authenticated` attribute will either True or False if logged in    
+   - a greeting for logged in users is setup if True
+   - a login prompt is setup if False
     ~~~ html
     <p>
         <a href = "{% url 'learning_logs:index' %}"> Learning Log </a> - 
@@ -696,14 +699,14 @@ The request object is returned from the server and a query is set up. A `context
     ...
     ~~~
 2) Create a simple page to indicate logged out status
-~~~ html
-{% extends "learning_logs/base.html" %}
+    ~~~ html
+    {% extends "learning_logs/base.html" %}
 
-{% block content %}
-    <p> You are now logged out </p>
+    {% block content %}
+        <p> You are now logged out </p>
 
-{% endblock content %}
-~~~
+    {% endblock content %}
+    ~~~
 3) `IMPORTANT` The logout page will not be shown and the admin panel logged out message will appear unless the apps you created come before `django.contrib.admin`  within `INSTALLED_APP` inside of `settings.py`
     ~~~ py
     INSTALLED_APPS = [
@@ -723,8 +726,8 @@ The request object is returned from the server and a query is set up. A `context
     ~~~
 
 ### Building the Registration page
-- the registration page has its own view and requires the `views module` to be imported in `users/urls.py`
-- the URL pattern `http://localhost:8000/users/register/` will send requests to the `register()` function
+   - the registration page has its own view and requires the `views module` to be imported in `users/urls.py`
+   - the URL pattern `http://localhost:8000/users/register/` will send requests to the `register()` function
 1) Update the `users/urls.py` file
     ~~~ py
     """ Define URL patterns for user """
@@ -744,62 +747,62 @@ The request object is returned from the server and a query is set up. A `context
 
     ~~~
 2) Using `Django's` class `UserCreationForm`, create a view within `users/views.py` for the `register()` view function
-- both `render` and `redirect need to be imported`
-- the login() function must be imported to process credentials
-- `UserCreationForm` must be imported
-- a `GET` request creates a new instance of `UserCreationForm` that contains no data
-- `POST` request data creates a new instance of `UserCreationForm`
-- a valid form:
-    -  writes the user and password hash to the database
-    - creates a session for the user with the `request` and `new_user` objects
-    - redirects user to the own homepage
-    ~~~ py
-    from django.shortcuts import render, redirect
-    from django.contrib.auth import login
-    from django.contrib.auth.forms import UserCreationForm
+   - both `render` and `redirect need to be imported`
+   - the login() function must be imported to process credentials
+   - `UserCreationForm` must be imported
+   - a `GET` request creates a new instance of `UserCreationForm` that contains no data
+   - `POST` request data creates a new instance of `UserCreationForm`
+   - a valid form:
+       -  writes the user and password hash to the database
+       - creates a session for the user with the `request` and `new_user` objects
+       - redirects user to the own homepage
+       ~~~ py
+       from django.shortcuts import render, redirect
+       from django.contrib.auth import login
+       from django.contrib.auth.forms import UserCreationForm
 
-    # Create your views here.
+       # Create your views here.
 
-    def register(request):
-        """ Regsiter a new user if GET request made """
-        if request.method != 'POST' and request.method == 'GET':
-            # present user a registration form with no data
-            form = UserCreationForm()
-        else:     
-            # process a completed form with POST data
-            form = UserCreationForm(data = request.POST)
+       def register(request):
+           """ Regsiter a new user if GET request made """
+           if request.method != 'POST' and request.method == 'GET':
+               # present user a registration form with no data
+               form = UserCreationForm()
+           else:     
+               # process a completed form with POST data
+               form = UserCreationForm(data = request.POST)
 
-            if form.is_valid():
-                new_user = form.save()
-                # Log in user and the redirect to home page
+               if form.is_valid():
+                   new_user = form.save()
+                   # Log in user and the redirect to home page
 
-                login(request, new_user)
-                return redirect('learning_logs:index')
+                   login(request, new_user)
+                   return redirect('learning_logs:index')
 
-        # Display blank or invalid form
-        context = { 'form': form }        
-        return render(request, 'registration/register.html', context)
-    ~~~
+           # Display blank or invalid form
+           context = { 'form': form }        
+           return render(request, 'registration/register.html', context)
+       ~~~
 3) Build template for user registration
-- Django automatically notifies user if login form is not filled in correctly
-    ~~~~ html
-    {% extends "learning_logs/base.html" %}
+   - Django automatically notifies user if login form is not filled in correctly
+       ~~~~ html
+       {% extends "learning_logs/base.html" %}
 
-    {% block content %}
+       {% block content %}
 
-        <form method = "post" action = "{% url 'users:register' %}">
-            {% csrf_token %}
-            {{form.as_p}}
+           <form method = "post" action = "{% url 'users:register' %}">
+               {% csrf_token %}
+               {{form.as_p}}
 
-            <button name = "submit"> Register </button>
-            <input 
-                type = "hidden" 
-                name = "next" 
-                value = "{% url 'learning_logs:index' %}" 
-            />
-        </form>
-    {% endblock content %}  
-    ~~~   
+               <button name = "submit"> Register </button>
+               <input 
+                   type = "hidden" 
+                   name = "next" 
+                   value = "{% url 'learning_logs:index' %}" 
+               />
+           </form>
+       {% endblock content %}  
+       ~~~   
 4) Modify `base.html` to show registration link if user not logged in    
     ~~~ html
         ...
@@ -810,9 +813,9 @@ The request object is returned from the server and a query is set up. A `context
         ...
     ~~~
 ### Restricting access to pages
-- Each topic is owned by a user
-- the @login_required decorator(a directive placed before a function) verified if a user is logged in
-- users not logged in are redirected to the login page
+   - Each topic is owned by a user
+   - the @login_required decorator(a directive placed before a function) verified if a user is logged in
+   - users not logged in are redirected to the login page
 1) Import the `login_required()` decorator to `learning_logs/views.py`
     ~~~ py
     from django.contrib.auth.decorators import login_required
@@ -830,15 +833,15 @@ The request object is returned from the server and a query is set up. A `context
 
     ~~~
 2) Add a new field called `owner` to `Topic` 
-- This will create a foreign key relationship with the `User` model
-- the `on_delete=models.CASCADE` option will remove all topic associated with a deleted user
-    ~~~ py
-    class Topic(models.Model): # inherit from Django's base Model class 
-        """ Topic that the use in learning about """
-        text = models.CharField(max_length=200) # allocates 200 chars in database
-        data_added = models.DateTimeField(auto_now_add=True) # sets to current data/time when new topic created
-        owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    ~~~
+   - This will create a foreign key relationship with the `User` model
+   - the `on_delete=models.CASCADE` option will remove all topic associated with a deleted user
+       ~~~ py
+       class Topic(models.Model): # inherit from Django's base Model class 
+           """ Topic that the use in learning about """
+           text = models.CharField(max_length=200) # allocates 200 chars in database
+           data_added = models.DateTimeField(auto_now_add=True) # sets to current data/time when new topic created
+           owner = models.ForeignKey(User, on_delete=models.CASCADE)
+       ~~~
 ### Migrate the database
 1) `python manage.py makemigrations learning_logs`
 2) Select option 1 at the prompt choice to `provide a one-off default now`
@@ -846,15 +849,15 @@ The request object is returned from the server and a query is set up. A `context
 4) Complete the migration by entering `python manage.py migrate`    
 ### Restrict Topics to particular users
 1) Modify `views.py` to only show topics that belong to a specific user
-- only topics objects that match the currently logged in user request.user are provided to the `topics` query object
-    ~~~ py
-        @login_required
-        def topics(request):
-            """ Show all topics """
-            # topics = Topic.objects.order_by('data_added')
-            topics = Topic.objects.filter(owner=request.user).order_by('data_added')
-            context = {'topics': topics}  
-    ~~~
+   - only topics objects that match the currently logged in user request.user are provided to the `topics` query object
+       ~~~ py
+           @login_required
+           def topics(request):
+               """ Show all topics """
+               # topics = Topic.objects.order_by('data_added')
+               topics = Topic.objects.filter(owner=request.user).order_by('data_added')
+               context = {'topics': topics}  
+       ~~~
 2) Protect users topics from direct URL links
 - add `from django.http import Http404` to top of `views.py`
     ~~~ py
@@ -908,46 +911,46 @@ The request object is returned from the server and a query is set up. A `context
         context = {'entry': entry, 'topic': topic, 'form': form}
         return render(request, 'learning_logs/edit_entry.html', context)        
     ~~~
-- the error message `Django IntegrityError - NOT NULL constraint failed: learning_logs_topic.owner_id` will appear if a user tries to create a new topic
-- the new topic must have a value in the user that owns)e.g. is associated with) that topic
-- the `new_topic = form.save(commit=False)` prevents writing to the database
-- the `new_topic.owner = request.user` creates the association between the user and topic
-- `new_topic.save()` writes the new topic to the database
-- after modifying `new_topic` , new topics & entries only specific to a particular users can now be created
-    ~~~ py
-    @login_required
-    def new_topic(request):
-        """ Add new topic """       
-        if (request.method != 'POST' and request.method == 'GET'):
-            # There was no POST data sumitted, return blank form
-            form = TopicForm()
-        else:
-            # POST data exists, process data within request.POST
-            form = TopicForm(data = request.POST)
-            if form.is_valid():
-                new_topic = form.save(commit=False)
-                new_topic.owner = request.user
-                new_topic.save()
-                
-                # form.save()
-                return redirect('learning_logs:topics')
+    - the error message `Django IntegrityError - NOT NULL constraint failed: learning_logs_topic.owner_id` will appear if a user tries to create a new topic
+    - the new topic must have a value in the user that owns)e.g. is associated with) that topic
+    - the `new_topic = form.save(commit=False)` prevents writing to the database
+    - the `new_topic.owner = request.user` creates the association between the user and topic
+    - `new_topic.save()` writes the new topic to the database
+    - after modifying `new_topic` , new topics & entries only specific to a particular users can now be created
+        ~~~ py
+        @login_required
+        def new_topic(request):
+            """ Add new topic """       
+            if (request.method != 'POST' and request.method == 'GET'):
+                # There was no POST data sumitted, return blank form
+                form = TopicForm()
+            else:
+                # POST data exists, process data within request.POST
+                form = TopicForm(data = request.POST)
+                if form.is_valid():
+                    new_topic = form.save(commit=False)
+                    new_topic.owner = request.user
+                    new_topic.save()
+                    
+                    # form.save()
+                    return redirect('learning_logs:topics')
 
-        # Display a blank or invalid form
-        context = {'form': form}
-        return render(request, 'learning_logs/new_topic.html', context)           
+            # Display a blank or invalid form
+            context = {'form': form}
+            return render(request, 'learning_logs/new_topic.html', context)           
 
-    ~~~
+        ~~~
 ### Refactor for restricting users topics   
-- a function called `check_new_entry` is added into 
-    - new_entry
-    - edit_entry
-    - topic
-- this prevents a user from attempting to access the topic URL of another user and creating new entries
-~~~ py
-def check_topic_owner(topic, request):
-    if topic.owner != request.user:
-        raise Http404
-~~~
+    - a function called `check_new_entry` is added into 
+        - new_entry
+        - edit_entry
+        - topic
+    - this prevents a user from attempting to access the topic URL of another user and creating new entries
+  ~~~ py
+      def check_topic_owner(topic, request):
+          if topic.owner != request.user:
+              raise Http404
+  ~~~
 
 ## Styling !
 ### Setup styling

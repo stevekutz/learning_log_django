@@ -19,7 +19,5 @@ urlpatterns = [
     path('new_entry/<int:topic_id>/', views.new_entry, name = 'new_entry'),
     # form page for editing entries based on entry_id
     path('edit_entry/<int:entry_id>/' , views.edit_entry, name = 'edit_entry'),
-    
-
 ]
 
